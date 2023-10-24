@@ -1,35 +1,72 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
+import React from 'react';
+import { fetchData } from './api/api';
+import { ImageData } from './api/types';
+import { Search } from './components/Search';
+import { Results } from './components/Results';
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+interface AppProps {}
+interface AppState {
+  imagesData: ImageData[];
+  pageIndex: number;
+  searchQuery: string;
 }
 
-export default App;
+export class App extends React.Component<AppProps, AppState> {
+  public state: AppState = {
+    imagesData: [],
+    pageIndex: 1,
+    searchQuery: localStorage.getItem('nasa-search-queue') || '',
+  };
+
+  async componentDidUpdate(_prevProps: never, prevState: AppState) {
+    const { pageIndex, searchQuery } = this.state;
+    if (
+      prevState.pageIndex !== pageIndex ||
+      prevState.searchQuery !== searchQuery
+    ) {
+      await this.updateResults();
+    }
+  }
+
+  async componentDidMount() {
+    await this.updateResults();
+  }
+
+  private updateResults = async () => {
+    try {
+      const fetchedImagesData = await fetchData(
+        this.state.pageIndex,
+        this.state.searchQuery
+      );
+      this.setState({ imagesData: fetchedImagesData || [] }, () =>
+        console.log(this.state.imagesData)
+      );
+    } catch (error) {
+      this.setState({ imagesData: [] });
+    }
+  };
+
+  private searchHandler = (searchQuery: string) => {
+    this.setState({ searchQuery: searchQuery, pageIndex: 1 });
+  };
+
+  private resetHandler = () => {
+    this.setState({ searchQuery: '', pageIndex: 1 });
+  };
+
+  render() {
+    return (
+      <>
+        <div className="container mx-auto flex min-h-screen max-w-screen-xl flex-col p-2 ">
+          <Search
+            searchQuery={this.state.searchQuery}
+            searchHandler={this.searchHandler}
+            resetHandler={this.resetHandler}
+          ></Search>
+          <Results imagesData={this.state.imagesData}></Results>
+        </div>
+      </>
+    );
+  }
+}
