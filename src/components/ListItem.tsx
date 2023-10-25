@@ -21,14 +21,14 @@ export class ListItem extends React.Component<Props, State> {
     };
   }
 
-  handleMouseEnter = () => {
+  mouseEnterHandler = () => {
     const newTimer = setTimeout(() => {
       this.setState({ isHovered: true });
     }, 200);
     this.setState({ tooltipTimer: newTimer });
   };
 
-  handleMouseLeave = () => {
+  mouseLeaveHandler = () => {
     const { tooltipTimer } = this.state;
     clearTimeout(tooltipTimer);
     this.setState({ isHovered: false });
@@ -50,8 +50,8 @@ export class ListItem extends React.Component<Props, State> {
         key={itemId}
         data-item-id={itemId}
         className="relative cursor-pointer select-none rounded-md p-1 hover:bg-sky-200"
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
+        onMouseEnter={this.mouseEnterHandler}
+        onMouseLeave={this.mouseLeaveHandler}
       >
         {trimImageName(imageTitle)}
 

@@ -1,4 +1,3 @@
-import './App.css';
 import React from 'react';
 import { fetchData } from './api/api';
 import { ImageData } from './api/types';

@@ -1,13 +1,3 @@
-// export function trimText(text: string) {
-//   let words = text.split(' ');
-
-//   if (words.length > 15) {
-//     words = words.slice(0, 15);
-//   }
-
-//   return words.join(' ');
-// }
-
 export function trimImageName(text: string) {
   if (text.length > 34) {
     const words = text.split(' ');
