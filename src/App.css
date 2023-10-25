@@ -1,15 +1,19 @@
 :root {
   background-color: #242424;
 }
+
 .tooltip {
-  transition:
-    opacity 0.3s ease-in-out,
-    visibility 0.3s ease-in-out;
-  opacity: 0;
-  visibility: hidden;
+  @apply absolute left-0 top-0 z-10 mt-8 cursor-auto rounded border border-gray-300 bg-white p-4 shadow-lg transition-opacity duration-1000 ease-in-out;
 }
 
-.tooltip.visible {
-  opacity: 1;
-  visibility: visible;
+.button {
+  @apply rounded-md p-1 px-1 font-pixelify;
+}
+
+.button-red {
+  @apply button bg-red-800 text-white transition-all hover:bg-red-600 active:bg-red-300 active:text-black sm:px-7;
+}
+
+.button-blue {
+  @apply button rounded-e-md bg-sky-700 text-white transition-all hover:bg-sky-800 active:bg-sky-300 active:text-black sm:px-10;
 }

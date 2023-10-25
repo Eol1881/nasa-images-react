@@ -58,13 +58,13 @@ export class Search extends React.Component<Props, State> {
             }}
           />
           <button
-            className="bg-red-800 p-1 px-1 font-pixelify text-white transition-all hover:bg-red-600 active:bg-red-300 active:text-black sm:px-7"
+            className="button-red !rounded-none"
             onClick={this.resetHandler}
           >
             Reset
           </button>
           <button
-            className="rounded-e-md bg-sky-700 p-1 px-2 font-pixelify text-white transition-all hover:bg-sky-800 active:bg-sky-300 active:text-black sm:px-10"
+            className="button-blue !rounded-s-none"
             onClick={this.searchHandler}
           >
             Search

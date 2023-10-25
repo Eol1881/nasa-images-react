@@ -4,22 +4,30 @@ import { fetchData } from './api/api';
 import { ImageData } from './api/types';
 import { Search } from './components/Search';
 import { Results } from './components/Results';
+import { Loader } from './components/Loader';
 
-interface AppProps {}
-interface AppState {
+interface Props {}
+interface State {
   imagesData: ImageData[];
   pageIndex: number;
   searchQuery: string;
+  shouldThrowError: boolean;
+  isLoading: boolean;
 }
 
-export class App extends React.Component<AppProps, AppState> {
-  public state: AppState = {
-    imagesData: [],
-    pageIndex: 1,
-    searchQuery: localStorage.getItem('nasa-search-queue') || '',
-  };
+export class App extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      imagesData: [],
+      pageIndex: 1,
+      searchQuery: localStorage.getItem('nasa-search-queue') || '',
+      shouldThrowError: false,
+      isLoading: false,
+    };
+  }
 
-  async componentDidUpdate(_prevProps: never, prevState: AppState) {
+  async componentDidUpdate(_prevProps: never, prevState: State) {
     const { pageIndex, searchQuery } = this.state;
     if (
       prevState.pageIndex !== pageIndex ||
@@ -35,6 +43,7 @@ export class App extends React.Component<AppProps, AppState> {
 
   private updateResults = async () => {
     try {
+      this.setState({ isLoading: true });
       const fetchedImagesData = await fetchData(
         this.state.pageIndex,
         this.state.searchQuery
@@ -44,6 +53,8 @@ export class App extends React.Component<AppProps, AppState> {
       );
     } catch (error) {
       this.setState({ imagesData: [] });
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
 
@@ -55,17 +66,27 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ searchQuery: '', pageIndex: 1 });
   };
 
+  private throwErrorHandler = () => {
+    this.setState({ shouldThrowError: true });
+  };
+
   render() {
+    if (this.state.shouldThrowError) throw new Error('Fake rendering error');
     return (
       <>
-        <div className="container mx-auto flex min-h-screen max-w-screen-xl flex-col p-2 ">
-          <Search
-            searchQuery={this.state.searchQuery}
-            searchHandler={this.searchHandler}
-            resetHandler={this.resetHandler}
-          ></Search>
+        <Search
+          searchQuery={this.state.searchQuery}
+          searchHandler={this.searchHandler}
+          resetHandler={this.resetHandler}
+        ></Search>
+        {this.state.isLoading ? (
+          <Loader></Loader>
+        ) : (
           <Results imagesData={this.state.imagesData}></Results>
-        </div>
+        )}
+        <button className="button-red mt-4" onClick={this.throwErrorHandler}>
+          Throw fake error
+        </button>
       </>
     );
   }

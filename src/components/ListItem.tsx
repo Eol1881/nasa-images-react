@@ -7,11 +7,19 @@ interface Props {
   imageData: ImageData;
 }
 
-export class ListItem extends React.Component<Props> {
-  state = {
-    isHovered: false,
-    tooltipTimer: 0,
-  };
+interface State {
+  isHovered: boolean;
+  tooltipTimer: number;
+}
+
+export class ListItem extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isHovered: false,
+      tooltipTimer: 0,
+    };
+  }
 
   handleMouseEnter = () => {
     const newTimer = setTimeout(() => {
@@ -48,8 +56,8 @@ export class ListItem extends React.Component<Props> {
         {trimImageName(imageTitle)}
 
         <div
-          className={`tooltip absolute left-0 top-0 z-10 mt-8 cursor-auto rounded border border-gray-300 bg-white p-4 shadow-lg ${
-            isHovered ? 'visible' : ''
+          className={`tooltip ${
+            isHovered ? 'visible opacity-100' : 'invisible opacity-0'
           }`}
         >
           <img src={imageUrl} alt="Image" className="h-32 w-32 object-cover" />
