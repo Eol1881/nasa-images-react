@@ -4,13 +4,13 @@ import { ImageData } from './api/types';
 import { Search } from './components/Search';
 import { Results } from './components/Results';
 import { Loader } from './components/Loader';
+import ErrorBoundary from './components/ErrorBoundary';
 
 interface Props {}
 interface State {
   imagesData: ImageData[];
   pageIndex: number;
   searchQuery: string;
-  shouldThrowError: boolean;
   isLoading: boolean;
 }
 
@@ -21,7 +21,6 @@ export class App extends React.Component<Props, State> {
       imagesData: [],
       pageIndex: 1,
       searchQuery: localStorage.getItem('nasa-search-queue') || '',
-      shouldThrowError: false,
       isLoading: false,
     };
   }
@@ -65,12 +64,7 @@ export class App extends React.Component<Props, State> {
     this.setState({ searchQuery: '', pageIndex: 1 });
   };
 
-  private throwErrorHandler = () => {
-    this.setState({ shouldThrowError: true });
-  };
-
   render() {
-    if (this.state.shouldThrowError) throw new Error('Fake rendering error');
     return (
       <>
         <Search
@@ -78,14 +72,13 @@ export class App extends React.Component<Props, State> {
           searchHandler={this.searchHandler}
           resetHandler={this.resetHandler}
         ></Search>
-        {this.state.isLoading ? (
-          <Loader></Loader>
-        ) : (
-          <Results imagesData={this.state.imagesData}></Results>
-        )}
-        <button className="button-red mt-4" onClick={this.throwErrorHandler}>
-          Throw fake error
-        </button>
+        <ErrorBoundary>
+          {this.state.isLoading ? (
+            <Loader></Loader>
+          ) : (
+            <Results imagesData={this.state.imagesData}></Results>
+          )}
+        </ErrorBoundary>
       </>
     );
   }
