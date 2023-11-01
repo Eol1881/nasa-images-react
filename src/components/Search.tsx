@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 interface Props {
   searchHandler: (searchQuery: string) => void;
-  resetHandler: () => void;
+  searchResetHandler: () => void;
   searchQuery: string;
 }
 
@@ -12,7 +12,7 @@ export function Search(props: Props) {
   const resetHandler = () => {
     setSearchInputValue('');
     localStorage.removeItem('nasa-search-queue');
-    props.resetHandler();
+    props.searchResetHandler();
   };
 
   const handleSearch = () => {
@@ -22,9 +22,7 @@ export function Search(props: Props) {
 
   return (
     <div className="mt-4 space-y-4 rounded-lg bg-white px-2 py-3 text-center text-black shadow-md sm:px-4 sm:text-left">
-      <h1 className="select-none font-pixelify text-3xl font-bold">
-        🚀 NASA Images Viewer
-      </h1>
+      <h1 className="select-none font-pixelify text-3xl font-bold">🚀 NASA Images Viewer</h1>
       <div className="flex justify-stretch">
         <input
           id="search"

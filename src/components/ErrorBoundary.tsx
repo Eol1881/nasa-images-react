@@ -7,6 +7,7 @@ interface State {
 
 interface Props {
   children: React.ReactNode;
+  hardResetHandler: () => void;
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
@@ -23,8 +24,9 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return;
   }
 
-  updatePage = () => {
-    location.reload();
+  resetAndUpdate = () => {
+    this.props.hardResetHandler();
+    this.setState({ hasError: false, error: null });
   };
 
   render() {
@@ -32,7 +34,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         <div className="mx-auto my-auto flex flex-col items-center font-pixelify text-lg text-red-500">
           <h1>Oops! Something went wrong.</h1>
-          <button className="button-blue my-4" onClick={this.updatePage}>
+          <button className="button-blue my-4" onClick={this.resetAndUpdate}>
             Reload
           </button>
         </div>
