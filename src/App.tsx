@@ -1,85 +1,66 @@
-import React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { fetchData } from './api/api';
 import { ImageData } from './api/types';
 import { Search } from './components/Search';
 import { Results } from './components/Results';
 import { Loader } from './components/Loader';
-import ErrorBoundary from './components/ErrorBoundary';
 
-interface Props {}
-interface State {
-  imagesData: ImageData[];
-  pageIndex: number;
-  searchQuery: string;
-  isLoading: boolean;
-}
+export function App() {
+  const [imagesData, setImagesData] = useState<ImageData[]>([]);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [searchQuery, setSearchQuery] = useState(
+    localStorage.getItem('nasa-search-queue') || ''
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [shouldThrowError, setShouldThrowError] = useState(false);
 
-export class App extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      imagesData: [],
-      pageIndex: 1,
-      searchQuery: localStorage.getItem('nasa-search-queue') || '',
-      isLoading: false,
+  useEffect(() => {
+    const updateResults = async () => {
+      try {
+        setIsLoading(true);
+        const fetchedImagesData = await fetchData(pageIndex, searchQuery);
+        setImagesData(fetchedImagesData || []);
+      } catch (error) {
+        setImagesData([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }
 
-  async componentDidUpdate(_prevProps: never, prevState: State) {
-    const { pageIndex, searchQuery } = this.state;
-    if (
-      prevState.pageIndex !== pageIndex ||
-      prevState.searchQuery !== searchQuery
-    ) {
-      await this.updateResults();
-    }
-  }
+    updateResults();
+  }, [pageIndex, searchQuery]);
 
-  async componentDidMount() {
-    await this.updateResults();
-  }
+  const searchHandler = useCallback((searchQuery: string) => {
+    setSearchQuery(searchQuery);
+    setPageIndex(1);
+  }, []);
 
-  private updateResults = async () => {
-    try {
-      this.setState({ isLoading: true });
-      const fetchedImagesData = await fetchData(
-        this.state.pageIndex,
-        this.state.searchQuery
-      );
-      this.setState({ imagesData: fetchedImagesData || [] }, () =>
-        console.log(this.state.imagesData)
-      );
-    } catch (error) {
-      this.setState({ imagesData: [] });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
+  const resetHandler = useCallback(() => {
+    setSearchQuery('');
+    setPageIndex(1);
+  }, []);
 
-  private searchHandler = (searchQuery: string) => {
-    this.setState({ searchQuery: searchQuery, pageIndex: 1 });
-  };
+  const throwErrorHandler = useCallback(() => {
+    setShouldThrowError(true);
+  }, []);
 
-  private resetHandler = () => {
-    this.setState({ searchQuery: '', pageIndex: 1 });
-  };
+  if (shouldThrowError) throw new Error('Fake rendering error');
 
-  render() {
-    return (
-      <>
-        <Search
-          searchQuery={this.state.searchQuery}
-          searchHandler={this.searchHandler}
-          resetHandler={this.resetHandler}
-        ></Search>
-        <ErrorBoundary>
-          {this.state.isLoading ? (
-            <Loader></Loader>
-          ) : (
-            <Results imagesData={this.state.imagesData}></Results>
-          )}
-        </ErrorBoundary>
-      </>
-    );
-  }
+  return (
+    <>
+      <Search
+        searchQuery={searchQuery}
+        searchHandler={searchHandler}
+        resetHandler={resetHandler}
+      ></Search>
+      {isLoading ? (
+        <Loader></Loader>
+      ) : (
+        <Results imagesData={imagesData}></Results>
+      )}
+      <button className="button-red mt-4" onClick={throwErrorHandler}>
+        Throw fake error
+      </button>
+    </>
+  );
 }
