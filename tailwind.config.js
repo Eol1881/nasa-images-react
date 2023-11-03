@@ -7,6 +7,12 @@ export default {
         sans: ['Inter', 'sans-serif'],
         pixelify: ['Pixelify', 'sans'],
       },
+      transitionDuration: {
+        2000: '2000ms',
+      },
+      transitionTimingFunction: {
+        cool: 'cubic-bezier(.33, -3.81, .4, 2.92)',
+      },
     },
   },
   plugins: [],

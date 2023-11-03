@@ -1,7 +1,13 @@
-export interface GetImagesDataResponse {
+export interface SearchResults {
+  totalPages: number;
+  imagesData: ImageData[];
+}
+
+export interface NasaApiRespone {
   collection: {
-    version: string;
-    href: string;
+    metadata: {
+      total_hits: number;
+    };
     items: ImageData[];
   };
 }
@@ -21,6 +27,9 @@ export interface ImageData {
       description: string;
     },
   ];
+  metadata: {
+    total_hits: number;
+  };
   links?: [
     {
       href: string;

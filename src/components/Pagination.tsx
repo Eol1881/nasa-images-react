@@ -1,20 +1,29 @@
 import { useSearchParams } from 'react-router-dom';
 
-export function Pagination() {
+interface Props {
+  totalPages: number;
+}
+
+export function Pagination(props: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageIndex = Number(searchParams.get('page')) || 1;
-  const searchQuery = searchParams.get('search') || localStorage.getItem('nasa-search-query') || '';
+  const { totalPages } = props;
 
   const paginationHandler = (isNext: boolean) => {
-    const searchParams = new URLSearchParams();
-    searchParams.set('search', searchQuery);
-    searchParams.set('page', isNext ? (pageIndex + 1).toString() : (pageIndex - 1).toString());
+    const newPageIndex = isNext ? pageIndex + 1 : pageIndex - 1;
+    if (newPageIndex === 1) {
+      searchParams.delete('page');
+    } else {
+      searchParams.set('page', newPageIndex.toString());
+    }
     setSearchParams(searchParams);
   };
 
   return (
     <div className="flex justify-between pt-4 font-pixelify text-white">
-      <div>Page: {pageIndex}</div>
+      <div>
+        Page: {pageIndex} / {totalPages}
+      </div>
       <div className="flex justify-end space-x-4">
         <button
           onClick={() => {
@@ -29,8 +38,8 @@ export function Pagination() {
           onClick={() => {
             paginationHandler(true);
           }}
-          disabled={pageIndex === 999} // TODO: fix
-          className={`${pageIndex === 999 ? 'text-red-500' : ''}`}
+          disabled={totalPages === pageIndex}
+          className={`${totalPages === pageIndex ? 'text-red-500' : ''}`}
         >
           Next
         </button>

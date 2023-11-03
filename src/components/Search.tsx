@@ -1,52 +1,72 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-interface Props {
-  searchHandler: (searchQuery: string) => void;
-  searchResetHandler: () => void;
-  searchQuery: string;
-}
+export function Search() {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-export function Search(props: Props) {
-  const [searchInputValue, setSearchInputValue] = useState(props.searchQuery);
+  const currentPageIndex = searchParams.get('page');
 
-  const resetHandler = () => {
-    setSearchInputValue('');
+  const [inputSearchQuery, setInputSearchQuery] = useState(
+    currentPageIndex ? '' : localStorage.getItem('nasa-search-queue') || ''
+  );
+
+  const searchHandler = () => {
+    const newSearchParams = new URLSearchParams();
+    newSearchParams.set('search', inputSearchQuery);
+    newSearchParams.delete('page');
+
+    if (
+      newSearchParams.toString() === searchParams.toString() ||
+      newSearchParams.toString() === '' ||
+      inputSearchQuery === ''
+    ) {
+      return;
+    }
+
+    setSearchParams(newSearchParams);
+    localStorage.setItem('nasa-search-queue', inputSearchQuery);
+  };
+
+  const searchResetHandler = () => {
+    setInputSearchQuery('');
     localStorage.removeItem('nasa-search-queue');
-    props.searchResetHandler();
+    if (!searchParams.has('search') && !searchParams.has('page')) return;
+    searchParams.delete('search');
+    searchParams.delete('page');
+    setSearchParams(searchParams);
   };
 
-  const handleSearch = () => {
-    localStorage.setItem('nasa-search-queue', searchInputValue);
-    props.searchHandler(searchInputValue);
-  };
+  document.addEventListener('hard-reset', () => {
+    setInputSearchQuery('');
+    localStorage.removeItem('nasa-search-queue');
+  });
 
   return (
     <div className="mt-4 space-y-4 rounded-lg bg-white px-2 py-3 text-center text-black shadow-md sm:px-4 sm:text-left">
       <h1 className="select-none font-pixelify text-3xl font-bold">
-        <span className="cubic-bezier(.47,-0.55,.59,1.59) inline-block transition-all duration-1000 hover:rotate-180">
-          🚀
-        </span>{' '}
-        NASA Images Viewer
+        <span className="inline-block duration-2000 ease-cool hover:rotate-180">🚀</span> NASA
+        Images Viewer
       </h1>
+
       <div className="flex justify-stretch">
         <input
           id="search"
           className="min-w-0 flex-grow rounded-s-md bg-slate-300 p-1 pl-2 font-pixelify backdrop-blur-lg"
-          value={searchInputValue}
+          value={inputSearchQuery}
           placeholder="type search keywords"
           type="text"
           onChange={(e) => {
-            setSearchInputValue(e.target.value.trim());
+            setInputSearchQuery(e.target.value.trim());
           }}
           onKeyDown={(e) => {
             if (e.key !== 'Enter') return;
-            handleSearch();
+            searchHandler();
           }}
         />
-        <button className="button-red !rounded-none" onClick={resetHandler}>
+        <button className="button-red !rounded-none" onClick={searchResetHandler}>
           Reset
         </button>
-        <button className="button-blue !rounded-s-none" onClick={handleSearch}>
+        <button className="button-blue !rounded-s-none" onClick={searchHandler}>
           Search
         </button>
       </div>

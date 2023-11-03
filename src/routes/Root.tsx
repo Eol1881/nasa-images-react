@@ -1,78 +1,50 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { fetchData } from '../api/api';
-import { ImageData } from '../api/types';
+import { SearchResults } from '../api/types';
 import { Search } from '../components/Search';
 import { Results } from '../components/Results';
 import { Pagination } from '../components/Pagination';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-import { useSearchParams } from 'react-router-dom';
+import { useLoaderData, useNavigation } from 'react-router-dom';
+
+export async function rootLoader({ request }: { request: Request }) {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get('page')) || 1;
+  const searchQuery =
+    url.searchParams.get('search') || localStorage.getItem('nasa-search-query') || '';
+  return fetchData(page, searchQuery);
+}
 
 export function Root() {
-  const [imagesData, setImagesData] = useState<ImageData[]>([]);
+  const navigation = useNavigation();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const searchResults = useLoaderData() as SearchResults;
+  const { imagesData } = searchResults;
+  const { totalPages } = searchResults;
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pageIndex = Number(searchParams.get('page')) || 1;
-  const searchQuery = searchParams.get('search') || localStorage.getItem('nasa-search-query') || '';
-
+  // Throwing fake rendering error mechanism
   const [shouldThrowError, setShouldThrowError] = useState(false);
-
   const throwErrorHandler = useCallback(() => {
     setShouldThrowError(true);
   }, []);
 
-  useEffect(() => {
-    const updateResults = async () => {
-      try {
-        setIsLoading(true);
-        const fetchedImagesData = await fetchData(pageIndex, searchQuery);
-        setImagesData(fetchedImagesData || []);
-      } catch (error) {
-        setImagesData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    updateResults();
-  }, [pageIndex, searchQuery]);
-
-  const searchHandler = (searchQuery: string) => {
-    const searchParams = new URLSearchParams();
-    searchParams.set('search', searchQuery);
-    setSearchParams(searchParams);
-  };
-
-  const searchResetHandler = () => {
-    const searchParams = new URLSearchParams();
-    setSearchParams(searchParams);
-  };
-
   const hardResetHandler = () => {
-    const searchParams = new URLSearchParams();
-    setSearchParams(searchParams);
     setShouldThrowError(false);
+    document.dispatchEvent(new Event('hard-reset'));
   };
 
   return (
     <>
-      <Search
-        searchQuery={searchQuery}
-        searchHandler={searchHandler}
-        searchResetHandler={searchResetHandler}
-      ></Search>
+      <button className="button-red mt-4" onClick={throwErrorHandler}>
+        Throw fake error
+      </button>
+      <Search></Search>
       <ErrorBoundary hardResetHandler={hardResetHandler}>
-        <Results
-          imagesData={imagesData}
-          shouldThrowError={shouldThrowError}
-          isLoading={isLoading}
-        ></Results>
-        {!isLoading && <Pagination></Pagination>}
-        <button className="button-red mt-4" onClick={throwErrorHandler}>
-          Throw fake error
-        </button>
+        <Results imagesData={imagesData} shouldThrowError={shouldThrowError}></Results>
+        {navigation.state !== 'loading' && imagesData.length !== 0 && (
+          <Pagination totalPages={totalPages}></Pagination>
+        )}
       </ErrorBoundary>
     </>
   );
