@@ -40,11 +40,7 @@ export function ListItem(props: Props) {
     >
       {trimImageName(imageTitle)}
 
-      <div
-        className={`tooltip ${
-          isHovered ? 'visible opacity-100' : 'invisible opacity-0'
-        }`}
-      >
+      <div className={`tooltip ${isHovered ? 'visible opacity-100' : 'invisible opacity-0'}`}>
         <img src={imageUrl} alt="Image" className="h-32 w-32 object-cover" />
         <p className="font-pixelify">Center: {center}</p>
         <p className="font-pixelify">{dateCreatedFormatted}</p>

@@ -3,7 +3,6 @@ import { fetchData } from '../api/api';
 import { ImageData } from '../api/types';
 import { Search } from '../components/Search';
 import { Results } from '../components/Results';
-import { Loader } from '../components/Loader';
 import { Pagination } from '../components/Pagination';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -65,11 +64,11 @@ export function Root() {
         searchResetHandler={searchResetHandler}
       ></Search>
       <ErrorBoundary hardResetHandler={hardResetHandler}>
-        {isLoading ? (
-          <Loader></Loader>
-        ) : (
-          <Results imagesData={imagesData} shouldThrowError={shouldThrowError}></Results>
-        )}
+        <Results
+          imagesData={imagesData}
+          shouldThrowError={shouldThrowError}
+          isLoading={isLoading}
+        ></Results>
         {!isLoading && <Pagination></Pagination>}
         <button className="button-red mt-4" onClick={throwErrorHandler}>
           Throw fake error
