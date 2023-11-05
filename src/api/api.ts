@@ -1,24 +1,36 @@
 import { SearchResults, NasaApiRespone } from './types';
-import { getErrorMessage } from '../utils/getErrorMessage';
+import { extractErrorMessage } from '../utils/extractErrorMessage';
 
-const PAGE_SIZE = 13;
-
-export async function fetchData(page: number, searchQuery?: string): Promise<SearchResults> {
+export async function fetchItemsFromApi(page: number, pageSize: number, searchQuery: string): Promise<SearchResults> {
   try {
     const response = await fetch(
-      `https://images-api.nasa.gov/search?q=${
-        searchQuery || ''
-      }&media_type=image&page_size=${PAGE_SIZE}&page=${page}`
+      `https://images-api.nasa.gov/search?q=${searchQuery}&media_type=image&page_size=${pageSize}&page=${page}`
     );
 
     const data: NasaApiRespone = await response.json();
 
     return {
       imagesData: data.collection.items,
-      totalPages: Math.ceil(data.collection.metadata.total_hits / PAGE_SIZE),
+      totalPages: Math.ceil(data.collection.metadata.total_hits / pageSize),
     };
   } catch (error) {
-    const errorMessage = getErrorMessage(error);
+    const errorMessage = extractErrorMessage(error);
+    throw new Error(`Network Error! [ ${errorMessage} ]`);
+  }
+}
+
+export async function fetchDetailsFromApi(nasaID: string): Promise<SearchResults> {
+  try {
+    const response = await fetch(`https://images-api.nasa.gov/search?nasa_id=${nasaID}&media_type=image`);
+
+    const data: NasaApiRespone = await response.json();
+
+    return {
+      imagesData: data.collection.items,
+      totalPages: 1,
+    };
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error);
     throw new Error(`Network Error! [ ${errorMessage} ]`);
   }
 }

@@ -4,10 +4,10 @@ export function trimImageName(text: string) {
     let trimmedText = '';
     let count = 0;
 
-    for (let i = 0; i < words.length; i++) {
+    for (let i = 0; i < words.length; i += 1) {
       if (trimmedText.length + words[i].length <= 34) {
         trimmedText += words[i] + ' ';
-        count++;
+        count += 1;
       } else {
         break;
       }

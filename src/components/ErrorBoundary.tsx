@@ -1,5 +1,5 @@
 import React from 'react';
-import { getErrorMessage } from '../utils/getErrorMessage';
+import { extractErrorMessage } from '../utils/extractErrorMessage';
 import { Link } from 'react-router-dom';
 
 interface State {
@@ -36,7 +36,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
       return (
         <div className="mx-auto my-auto flex flex-col items-center font-pixelify text-lg text-red-500">
           <h1>Oops! Something went wrong.</h1>
-          <i>{getErrorMessage(this.state.error)}</i>
+          <i>{extractErrorMessage(this.state.error)}</i>
           <Link className="button-blue my-4" to="/" onClick={this.resetAndUpdate}>
             Reset
           </Link>

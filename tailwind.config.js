@@ -13,6 +13,9 @@ export default {
       transitionTimingFunction: {
         cool: 'cubic-bezier(.33, -3.81, .4, 2.92)',
       },
+      screens: {
+        'no-hover': { raw: '(hover: none)' },
+      },
     },
   },
   plugins: [],

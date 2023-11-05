@@ -1,13 +1,17 @@
 import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   totalPages: number;
 }
 
 export function Pagination(props: Props) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pageIndex = Number(searchParams.get('page')) || 1;
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { totalPages } = props;
+  const pageIndex = Number(searchParams.get('page')) || 1;
+  const isOnFirstPage = pageIndex === 1;
+  const isOnLastPage = totalPages === pageIndex;
 
   const paginationHandler = (isNext: boolean) => {
     const newPageIndex = isNext ? pageIndex + 1 : pageIndex - 1;
@@ -16,7 +20,7 @@ export function Pagination(props: Props) {
     } else {
       searchParams.set('page', newPageIndex.toString());
     }
-    setSearchParams(searchParams);
+    navigate(`/?${searchParams}`);
   };
 
   return (
@@ -29,8 +33,8 @@ export function Pagination(props: Props) {
           onClick={() => {
             paginationHandler(false);
           }}
-          disabled={pageIndex === 1}
-          className={`${pageIndex === 1 ? 'text-red-500' : ''}`}
+          disabled={isOnFirstPage}
+          className={`transition-all ${isOnFirstPage ? 'text-red-500' : 'hover:text-sky-500'}`}
         >
           Prev
         </button>
@@ -38,8 +42,8 @@ export function Pagination(props: Props) {
           onClick={() => {
             paginationHandler(true);
           }}
-          disabled={totalPages === pageIndex}
-          className={`${totalPages === pageIndex ? 'text-red-500' : ''}`}
+          disabled={isOnLastPage}
+          className={`transition-all ${isOnLastPage ? 'text-red-500' : 'hover:text-sky-500'}`}
         >
           Next
         </button>

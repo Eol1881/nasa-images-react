@@ -1,23 +1,26 @@
 import { useState, useCallback } from 'react';
-import { fetchData } from '../api/api';
+import { useLoaderData, useNavigation, Outlet } from 'react-router-dom';
+import { fetchItemsFromApi } from '../api/api';
 import { SearchResults } from '../api/types';
-import { Search } from '../components/Search';
-import { Results } from '../components/Results';
+import { Header } from '../components/Header';
+import { ResultList } from '../components/ResultList';
 import { Pagination } from '../components/Pagination';
+import { Loader } from '../components/Loader';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-import { useLoaderData, useNavigation } from 'react-router-dom';
+import { APP_CONFIG } from '../App';
 
 export async function rootLoader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get('page')) || 1;
-  const searchQuery =
-    url.searchParams.get('search') || localStorage.getItem('nasa-search-query') || '';
-  return fetchData(page, searchQuery);
+  const searchQuery = url.searchParams.get('search') || localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || '';
+  const pageSize = Number(url.searchParams.get('size')) || APP_CONFIG.DEFAULT_PAGE_SIZE;
+  return fetchItemsFromApi(page, pageSize, searchQuery);
 }
 
 export function Root() {
   const navigation = useNavigation();
+  const isLoading = navigation.state === 'loading';
 
   const searchResults = useLoaderData() as SearchResults;
   const { imagesData } = searchResults;
@@ -31,7 +34,7 @@ export function Root() {
 
   const hardResetHandler = () => {
     setShouldThrowError(false);
-    document.dispatchEvent(new Event('hard-reset'));
+    document.dispatchEvent(new Event('search-reset'));
   };
 
   return (
@@ -39,12 +42,15 @@ export function Root() {
       <button className="button-red mt-4" onClick={throwErrorHandler}>
         Throw fake error
       </button>
-      <Search></Search>
+      <Header></Header>
       <ErrorBoundary hardResetHandler={hardResetHandler}>
-        <Results imagesData={imagesData} shouldThrowError={shouldThrowError}></Results>
-        {navigation.state !== 'loading' && imagesData.length !== 0 && (
-          <Pagination totalPages={totalPages}></Pagination>
-        )}
+        <div className="relative mt-4 flex justify-between rounded-lg bg-white px-2 py-3 shadow-md sm:px-4">
+          <ResultList shouldThrowError={shouldThrowError} imagesData={imagesData}></ResultList>
+          <Outlet></Outlet>
+          <Loader></Loader>
+        </div>
+
+        {!isLoading && imagesData.length !== 0 && <Pagination totalPages={totalPages}></Pagination>}
       </ErrorBoundary>
     </>
   );

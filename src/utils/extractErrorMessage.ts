@@ -1,6 +1,6 @@
 import { isRouteErrorResponse } from 'react-router-dom';
 
-export function getErrorMessage(error: unknown): string {
+export function extractErrorMessage(error: unknown): string {
   if (isRouteErrorResponse(error)) {
     return `${error.status} ${error.statusText}`;
   } else if (error instanceof Error) {

@@ -1,9 +1,6 @@
 :root {
   background-color: #242424;
-}
-
-.tooltip {
-  @apply absolute left-0 top-0 z-10 mt-8 cursor-auto rounded border border-gray-300 bg-slate-100 p-4 shadow-lg transition-opacity duration-1000 ease-in-out;
+  overflow-x: hidden;
 }
 
 .button {
@@ -16,4 +13,17 @@
 
 .button-blue {
   @apply button rounded-e-md bg-sky-700 text-white transition-all hover:bg-sky-800 active:bg-sky-300 active:text-black sm:px-10;
+}
+
+.search-result {
+  @apply relative -ml-4 block cursor-pointer select-none rounded-r-md p-1 pl-8 transition-all hover:bg-slate-500 hover:text-slate-300;
+}
+
+.active {
+  @apply pointer-events-none -ml-4 rounded-l-none bg-slate-500 pl-4 text-slate-300;
+}
+
+.tooltip {
+  @apply no-hover:hidden absolute left-0 top-0 z-10 mt-8 cursor-auto 
+  rounded border border-gray-300 bg-slate-100 p-2 text-black shadow-lg transition-opacity duration-1000 ease-in-out;
 }

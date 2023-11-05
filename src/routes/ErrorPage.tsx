@@ -1,5 +1,5 @@
 import { useRouteError } from 'react-router-dom';
-import { getErrorMessage } from '../utils/getErrorMessage';
+import { extractErrorMessage } from '../utils/extractErrorMessage';
 import { Link } from 'react-router-dom';
 
 export default function ErrorPage() {
@@ -7,7 +7,7 @@ export default function ErrorPage() {
   console.error(error);
 
   const hardResetHandler = () => {
-    document.dispatchEvent(new Event('hard-reset'));
+    document.dispatchEvent(new Event('search-reset'));
   };
 
   return (
@@ -15,7 +15,7 @@ export default function ErrorPage() {
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
       <p>
-        <i className="text-red-300">{getErrorMessage(error)}</i>
+        <i className="text-red-300">{extractErrorMessage(error)}</i>
       </p>
       <Link className="button-blue my-4" to="/" onClick={hardResetHandler}>
         Home
