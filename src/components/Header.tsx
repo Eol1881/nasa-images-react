@@ -44,7 +44,12 @@ export function Header() {
   };
 
   return (
-    <header className="mt-4 space-y-4 rounded-lg bg-white px-2 py-3 text-center text-black shadow-md sm:px-4 sm:text-left">
+    <header
+      className="mt-4 space-y-4 rounded-lg bg-white px-2 py-3 text-center text-black shadow-md sm:px-4 sm:text-left"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <h1 className="select-none font-pixelify text-3xl font-bold">
         <span className="inline-block duration-2000 ease-cool hover:rotate-180">🚀</span> NASA Images Viewer
       </h1>

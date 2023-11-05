@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Root, rootLoader } from './routes/Root';
-import { ImageDetails, detailsLoader } from './routes/ImageDetails';
+import { ResultDetails, detailsLoader } from './routes/ResultDetails';
 import ErrorPage from './routes/ErrorPage';
 
 export const APP_CONFIG = {
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'details/:id',
-        element: <ImageDetails />,
+        element: <ResultDetails />,
         loader: detailsLoader,
       },
     ],
@@ -27,9 +27,5 @@ const router = createBrowserRouter([
 ]);
 
 export function App() {
-  return (
-    <div className="container mx-auto flex min-h-screen max-w-screen-xl flex-col p-2">
-      <RouterProvider router={router} />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }

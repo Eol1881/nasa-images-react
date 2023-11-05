@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useLoaderData, useNavigation, Outlet } from 'react-router-dom';
+import { useLoaderData, useNavigation, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchItemsFromApi } from '../api/api';
 import { SearchResults } from '../api/types';
 import { Header } from '../components/Header';
@@ -26,6 +26,14 @@ export function Root() {
   const { imagesData } = searchResults;
   const { totalPages } = searchResults;
 
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  function closeDetailsHandler() {
+    if (location.pathname === '/') return;
+    navigate(`/?${searchParams}`);
+  }
+
   // Throwing fake rendering error mechanism
   const [shouldThrowError, setShouldThrowError] = useState(false);
   const throwErrorHandler = useCallback(() => {
@@ -38,20 +46,20 @@ export function Root() {
   };
 
   return (
-    <>
+    <div className="container mx-auto flex min-h-screen max-w-screen-xl flex-col p-2" onClick={closeDetailsHandler}>
       <button className="button-red mt-4" onClick={throwErrorHandler}>
         Throw fake error
       </button>
       <Header></Header>
       <ErrorBoundary hardResetHandler={hardResetHandler}>
-        <div className="relative mt-4 flex justify-between rounded-lg bg-white px-2 py-3 shadow-md sm:px-4">
+        <main className="relative mt-4 flex justify-between rounded-lg bg-white px-2 py-3 shadow-md sm:px-4">
           <ResultList shouldThrowError={shouldThrowError} imagesData={imagesData}></ResultList>
           <Outlet></Outlet>
           <Loader></Loader>
-        </div>
+        </main>
 
         {!isLoading && imagesData.length !== 0 && <Pagination totalPages={totalPages}></Pagination>}
       </ErrorBoundary>
-    </>
+    </div>
   );
 }

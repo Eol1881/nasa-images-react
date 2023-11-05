@@ -19,7 +19,7 @@ export function ResultItem(props: Props) {
   const mouseEnterHandler = () => {
     tooltipTimer.current = window.setTimeout(() => {
       setIsHovered(true);
-    }, 200);
+    }, 300);
   };
 
   const mouseLeaveHandler = () => {
@@ -35,6 +35,9 @@ export function ResultItem(props: Props) {
 
   return (
     <NavLink
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className="search-result"
       to={{
         pathname: `details/${nasaId}`,

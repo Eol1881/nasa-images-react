@@ -10,14 +10,19 @@ export async function detailsLoader({ params }: { params: Params }) {
   return fetchDetailsFromApi(nasaId || '');
 }
 
-export function ImageDetails() {
+export function ResultDetails() {
   const [searchParams] = useSearchParams();
   const searchResults = useLoaderData() as SearchResults;
   const imageData = searchResults.imagesData[0];
   const { imageUrl, location, photographer, dateCreated } = extractImageData(imageData);
 
   return (
-    <div className="relative flex h-fit w-fit basis-full select-none flex-col items-center justify-between rounded-l-lg bg-blue-300/25 p-4 pb-5 md:basis-2/3 lg:basis-2/5">
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      className="relative flex h-fit w-fit basis-full select-none flex-col items-center justify-between rounded-l-lg bg-blue-300/25 p-4 pb-5 md:basis-2/3 lg:basis-2/5"
+    >
       <ImageMagnifier key={imageUrl} imageUrl={imageUrl}></ImageMagnifier>
 
       <div className="mt-2 flex w-full flex-col justify-between font-pixelify text-sm">

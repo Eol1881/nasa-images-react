@@ -24,7 +24,12 @@ export function Pagination(props: Props) {
   };
 
   return (
-    <div className="flex justify-between pt-4 font-pixelify text-white">
+    <div
+      className="flex justify-between pt-4 font-pixelify text-white"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       <div>
         Page: {pageIndex} / {totalPages}
       </div>
