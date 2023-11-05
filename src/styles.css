@@ -1,0 +1,42 @@
+:root {
+  background-color: #242424;
+  overflow-x: hidden;
+}
+
+.button {
+  @apply rounded-md p-1 px-1 font-pixelify;
+}
+
+.button-red {
+  @apply button bg-red-800 text-white transition-all hover:bg-red-600 active:bg-red-300 active:text-black sm:px-7;
+}
+
+.button-blue {
+  @apply button rounded-e-md bg-sky-700 text-white transition-all hover:bg-sky-800 active:bg-sky-300 active:text-black sm:px-10;
+}
+
+.search-result {
+  @apply relative -ml-4 block cursor-pointer select-none rounded-r-md p-1 pl-8 transition-all duration-500 hover:bg-slate-500 hover:text-slate-300;
+}
+
+.active {
+  @apply pointer-events-none -ml-4 rounded-l-none bg-slate-500 pl-4 text-slate-300;
+}
+
+.tooltip {
+  @apply absolute left-0 top-0 z-10 mt-8 overflow-hidden 
+  rounded-b-md bg-slate-500 text-black shadow-lg no-hover:hidden;
+  @apply h-0 transition-none;
+}
+
+.tooltip--hovered {
+  @apply h-48 transition-all duration-500 ease-chilly;
+}
+
+.overlay {
+  @apply relative;
+}
+.overlay::after {
+  @apply absolute left-0 top-0 h-full w-full bg-black/50;
+  content: '';
+}
