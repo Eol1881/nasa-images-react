@@ -8,10 +8,10 @@ export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentPageIndex = searchParams.get('page');
+  const currentSearchQuery = searchParams.get('search');
 
   const [inputSearchQuery, setInputSearchQuery] = useState(
-    currentPageIndex ? '' : localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || ''
+    currentSearchQuery || localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || ''
   );
 
   const searchHandler = () => {
