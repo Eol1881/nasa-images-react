@@ -24,6 +24,11 @@
 }
 
 .tooltip {
-  @apply no-hover:hidden absolute left-0 top-0 z-10 mt-8 cursor-auto 
-  rounded border border-gray-300 bg-slate-100 p-2 text-black shadow-lg transition-opacity duration-1000 ease-in-out;
+  @apply no-hover:hidden absolute left-0 top-0 z-10 mt-8 
+  overflow-hidden rounded-b-md bg-slate-500 text-black shadow-lg;
+  @apply h-0 transition-none;
+}
+
+.tooltip--hovered {
+  @apply ease-chilly h-48 transition-all duration-500;
 }
