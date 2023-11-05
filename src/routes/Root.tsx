@@ -23,16 +23,15 @@ export function Root() {
   const isLoading = navigation.state === 'loading';
 
   const searchResults = useLoaderData() as SearchResults;
-  const { imagesData } = searchResults;
-  const { totalPages } = searchResults;
+  const { imagesData, totalPages } = searchResults;
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  function closeDetailsHandler() {
-    if (location.pathname === '/') return;
-    navigate(`/?${searchParams}`);
-  }
+  const currentSearchQuery = searchParams.get('search');
+  const [inputSearchQuery, setInputSearchQuery] = useState(
+    currentSearchQuery || localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || ''
+  );
 
   // Throwing fake rendering error mechanism
   const [shouldThrowError, setShouldThrowError] = useState(false);
@@ -42,15 +41,31 @@ export function Root() {
 
   const hardResetHandler = () => {
     setShouldThrowError(false);
-    document.dispatchEvent(new Event('search-reset'));
+    searchResetHandler();
   };
+
+  const searchResetHandler = () => {
+    setInputSearchQuery('');
+    localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
+    if (location.pathname === '/' && searchParams.toString() === '') return;
+    navigate('/');
+  };
+
+  function closeDetailsHandler() {
+    if (location.pathname === '/') return;
+    navigate(`/?${searchParams}`);
+  }
 
   return (
     <div className="container mx-auto flex min-h-screen max-w-screen-xl flex-col p-2" onClick={closeDetailsHandler}>
       <button className="button-red mt-4" onClick={throwErrorHandler}>
         Throw fake error
       </button>
-      <Header></Header>
+      <Header
+        inputSearchQuery={inputSearchQuery}
+        setInputSearchQuery={setInputSearchQuery}
+        searchResetHandler={searchResetHandler}
+      ></Header>
       <ErrorBoundary hardResetHandler={hardResetHandler}>
         <main className="relative mt-4 flex justify-between rounded-lg bg-white px-2 py-3 shadow-md sm:px-4">
           <ResultList shouldThrowError={shouldThrowError} imagesData={imagesData}></ResultList>

@@ -3,6 +3,7 @@ import { formatDate } from './formatDate';
 import { trimImageName } from './trimImageName';
 
 export function extractImageData(imageData: ImageData) {
+  if (!imageData || !imageData.links) throw new Error('Invalid item ID');
   return {
     imageUrl: imageData.links ? imageData.links[0].href : '',
     imageTitle: trimImageName(imageData.data[0].title),

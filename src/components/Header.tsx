@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageSizeSelect } from './PageSizeSelect';
 import { APP_CONFIG } from '../App';
 
-export function Header() {
+interface Props {
+  inputSearchQuery: string;
+  setInputSearchQuery: (searchQuery: string) => void;
+  searchResetHandler: () => void;
+}
+
+export function Header(props: Props) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const currentSearchQuery = searchParams.get('search');
-
-  const [inputSearchQuery, setInputSearchQuery] = useState(
-    currentSearchQuery || localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || ''
-  );
+  const { inputSearchQuery, setInputSearchQuery, searchResetHandler } = props;
 
   const searchHandler = () => {
     const currentSearchParams = new URLSearchParams(searchParams);
@@ -25,15 +25,6 @@ export function Header() {
     localStorage.setItem(APP_CONFIG.LOCAL_STORAGE_PREFIX, inputSearchQuery);
     navigate(`/?${newSearchParams}`);
   };
-
-  const searchResetHandler = () => {
-    setInputSearchQuery('');
-    localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
-    if (location.pathname === '/' && searchParams.toString() === '') return;
-    navigate('/');
-  };
-
-  document.addEventListener('search-reset', searchResetHandler);
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputSearchQuery(e.target.value.trim());
