@@ -11,6 +11,8 @@ export function PageSizeSelect() {
     if (e.target.value === APP_CONFIG.DEFAULT_PAGE_SIZE.toString()) newSearchParams.delete('size');
     else newSearchParams.set('size', e.target.value);
 
+    newSearchParams.delete('page');
+
     if (newSearchParams.toString() === searchParams.toString()) return;
     navigate(`/?${newSearchParams}`);
   };
