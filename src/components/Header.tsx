@@ -64,7 +64,7 @@ export function Header() {
           Reset
         </button>
         <button className="button-blue !rounded-s-none" onClick={searchHandler}>
-          Header
+          Search
         </button>
       </div>
     </header>
