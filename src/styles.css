@@ -32,3 +32,11 @@
 .tooltip--hovered {
   @apply ease-chilly h-48 transition-all duration-500;
 }
+
+.overlay {
+  @apply relative;
+}
+.overlay::after {
+  @apply absolute left-0 top-0 h-full w-full bg-black/50;
+  content: '';
+}

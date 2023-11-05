@@ -9,5 +9,7 @@ export function extractImageData(imageData: ImageData) {
     nasaId: imageData.data[0].nasa_id,
     center: imageData.data[0].center,
     dateCreated: formatDate(new Date(imageData.data[0].date_created)),
+    location: imageData.data[0].location,
+    photographer: imageData.data[0].photographer,
   };
 }

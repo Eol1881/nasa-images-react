@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigation } from 'react-router-dom';
 
 export function ImageMagnifier({ imageUrl }: { imageUrl: string }) {
+  const navigation = useNavigation();
+  const isLoading = navigation.state === 'loading';
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [showMagnifier, setShowMagnifier] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -32,13 +35,17 @@ export function ImageMagnifier({ imageUrl }: { imageUrl: string }) {
 
   return (
     <div
-      className="relative cursor-crosshair"
+      className={`relative cursor-crosshair transition-all ${isLoading && 'overlay'}`}
       onMouseEnter={() => setShowMagnifier(true)}
       onMouseLeave={() => setShowMagnifier(false)}
       onMouseMove={handleMouseMove}
       onMouseDown={handleMouseDown}
     >
-      <img className="pointer-events-none h-72 w-80 cursor-none object-cover" src={imageUrl} alt="" />
+      <img
+        className="pointer-events-none h-72 w-80 cursor-none object-cover backdrop-blur-md"
+        src={imageUrl}
+        alt="NASA photo"
+      />
 
       {showMagnifier && (
         <div

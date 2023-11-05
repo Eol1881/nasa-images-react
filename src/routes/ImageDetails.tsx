@@ -2,8 +2,8 @@ import { Params, useLoaderData, useSearchParams } from 'react-router-dom';
 import { fetchDetailsFromApi } from '../api/api';
 import { SearchResults } from '../api/types';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../utils/formatDate';
 import { ImageMagnifier } from '../components/ImageMagnifier';
+import { extractImageData } from '../utils/extractImageData';
 
 export async function detailsLoader({ params }: { params: Params }) {
   const nasaId = params.id;
@@ -14,8 +14,7 @@ export function ImageDetails() {
   const [searchParams] = useSearchParams();
   const searchResults = useLoaderData() as SearchResults;
   const imageData = searchResults.imagesData[0];
-  const { location, date_created, photographer } = imageData.data[0];
-  const imageUrl = imageData.links ? imageData.links[0].href : '';
+  const { imageUrl, location, photographer, dateCreated } = extractImageData(imageData);
 
   return (
     <div className="relative flex h-fit w-fit basis-full select-none flex-col items-center justify-between rounded-l-lg bg-blue-300/25 p-4 pb-5 md:basis-2/3 lg:basis-2/5">
@@ -24,7 +23,7 @@ export function ImageDetails() {
       <div className="mt-2 flex w-full flex-col justify-between font-pixelify text-sm">
         <p>Location: {location || 'Unknown'}</p>
         <p>Photo: {photographer || 'Unknown'}</p>
-        <p>Date: {formatDate(new Date(date_created)) || 'Unknown'}</p>
+        <p>Date: {dateCreated || 'Unknown'}</p>
       </div>
       <Link
         to={{ pathname: '/', search: searchParams.toString() }}
