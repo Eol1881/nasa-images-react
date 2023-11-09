@@ -8,10 +8,9 @@ interface Props {
   imageData: ImageData;
 }
 
-export function ResultItem(props: Props) {
+export const ResultItem: React.FC<Props> = ({ imageData }) => {
   const [searchParams] = useSearchParams();
   const [isHovered, setIsHovered] = useState(false);
-  const { imageData } = props;
   const tooltipTimer = useRef(0);
 
   const { imageUrl, imageTitle, nasaId, center, dateCreated } = extractImageData(imageData);
@@ -51,4 +50,4 @@ export function ResultItem(props: Props) {
       <Tooltip isHovered={isHovered} imageUrl={imageUrl} center={center} dateCreated={dateCreated}></Tooltip>
     </NavLink>
   );
-}
+};

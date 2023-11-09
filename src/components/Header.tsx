@@ -8,11 +8,9 @@ interface Props {
   searchResetHandler: () => void;
 }
 
-export function Header(props: Props) {
+export const Header: React.FC<Props> = ({ inputSearchQuery, setInputSearchQuery, searchResetHandler }) => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const { inputSearchQuery, setInputSearchQuery, searchResetHandler } = props;
 
   const searchHandler = () => {
     const currentSearchParams = new URLSearchParams(searchParams);
@@ -65,4 +63,4 @@ export function Header(props: Props) {
       </div>
     </header>
   );
-}
+};

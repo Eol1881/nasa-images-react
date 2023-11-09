@@ -2,7 +2,7 @@ import { useRouteError } from 'react-router-dom';
 import { extractErrorMessage } from '../utils/extractErrorMessage';
 import { Link } from 'react-router-dom';
 
-export default function ErrorPage() {
+export const ErrorPage: React.FC = () => {
   const error = useRouteError();
   console.error(error);
 
@@ -18,4 +18,4 @@ export default function ErrorPage() {
       </Link>
     </div>
   );
-}
+};

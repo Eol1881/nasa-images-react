@@ -1,6 +1,6 @@
 import { useNavigation } from 'react-router-dom';
 
-export function Loader() {
+export const Loader: React.FC = () => {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
 
@@ -13,4 +13,4 @@ export function Loader() {
       LOADING...
     </div>
   );
-}
+};

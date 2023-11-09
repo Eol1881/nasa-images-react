@@ -5,9 +5,7 @@ interface Props {
   dateCreated: string;
 }
 
-export function Tooltip(props: Props) {
-  const { isHovered, imageUrl, center, dateCreated } = props;
-
+export const Tooltip: React.FC<Props> = ({ isHovered, imageUrl, center, dateCreated }) => {
   return (
     <div className={`tooltip ${isHovered && 'tooltip--hovered'}`}>
       <div className="p-2">
@@ -17,4 +15,4 @@ export function Tooltip(props: Props) {
       </div>
     </div>
   );
-}
+};

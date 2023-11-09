@@ -8,10 +8,9 @@ interface Props {
   shouldThrowError: boolean;
 }
 
-export function ResultList(props: Props) {
+export const ResultList: React.FC<Props> = ({ imagesData, shouldThrowError }) => {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
-  const { imagesData, shouldThrowError } = props;
   const isNothingFound = imagesData.length === 0;
   const isDetailsOpened = location.pathname.startsWith('/details');
 
@@ -41,4 +40,4 @@ export function ResultList(props: Props) {
       </div>
     </div>
   );
-}
+};

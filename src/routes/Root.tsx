@@ -16,8 +16,7 @@ export async function rootLoader({ request }: { request: Request }) {
   const pageSize = Number(url.searchParams.get('size')) || APP_CONFIG.DEFAULT_PAGE_SIZE;
   return fetchItemsFromApi(page, pageSize, searchQuery);
 }
-
-export function Root() {
+export const Root: React.FC = () => {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
 
@@ -72,8 +71,8 @@ export function Root() {
           <Loader></Loader>
         </main>
 
-        {!isLoading && imagesData.length !== 0 && <Pagination totalPages={totalPages}></Pagination>}
+        {!isLoading && imagesData.length !== 0 && <Pagination totalPages={totalPages || 1}></Pagination>}
       </ErrorBoundary>
     </div>
   );
-}
+};

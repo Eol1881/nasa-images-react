@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigation } from 'react-router-dom';
 
-export function ImageMagnifier({ imageUrl }: { imageUrl: string }) {
+interface Props {
+  imageUrl: string;
+}
+
+export const ImageMagnifier: React.FC<Props> = ({ imageUrl }) => {
   const navigation = useNavigation();
   const isLoading = navigation.state === 'loading';
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -68,4 +72,4 @@ export function ImageMagnifier({ imageUrl }: { imageUrl: string }) {
       )}
     </div>
   );
-}
+};

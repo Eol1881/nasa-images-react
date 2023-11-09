@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { APP_CONFIG } from '../constants';
 
-export function PageSizeSelect() {
+export const PageSizeSelect: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentPageSize = searchParams.get('size') || APP_CONFIG.DEFAULT_PAGE_SIZE;
@@ -33,4 +33,4 @@ export function PageSizeSelect() {
       })}
     </select>
   );
-}
+};

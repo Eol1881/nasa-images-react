@@ -4,13 +4,14 @@ import { SearchResults } from '../api/types';
 import { Link } from 'react-router-dom';
 import { ImageMagnifier } from '../components/ImageMagnifier';
 import { extractImageData } from '../utils/extractImageData';
+import React from 'react';
 
 export async function detailsLoader({ params }: { params: Params }) {
   const nasaId = params.id;
   return fetchDetailsFromApi(nasaId || '');
 }
 
-export function ResultDetails() {
+export const ResultDetails: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchResults = useLoaderData() as SearchResults;
   const imageData = searchResults.imagesData[0];
@@ -38,4 +39,4 @@ export function ResultDetails() {
       </Link>
     </div>
   );
-}
+};
