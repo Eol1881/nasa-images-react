@@ -24,10 +24,10 @@ export const PageSizeSelect: React.FC = () => {
       onChange={changeHandler}
       value={currentPageSize.toString()}
     >
-      {APP_CONFIG.PAGE_SIZES.map((pageSize) => {
+      {APP_CONFIG.PAGE_SIZES.map((pageSizeOption) => {
         return (
-          <option key={pageSize} value={pageSize.toString()}>
-            {pageSize}
+          <option key={pageSizeOption} value={pageSizeOption.toString()}>
+            {pageSizeOption}
           </option>
         );
       })}
