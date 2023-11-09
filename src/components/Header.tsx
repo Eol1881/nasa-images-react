@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageSizeSelect } from './PageSizeSelect';
-import { APP_CONFIG } from '../App';
+import { APP_CONFIG } from '../constants';
 
 interface Props {
   inputSearchQuery: string;

@@ -6,9 +6,8 @@ import { Header } from '../components/Header';
 import { ResultList } from '../components/ResultList';
 import { Pagination } from '../components/Pagination';
 import { Loader } from '../components/Loader';
+import { APP_CONFIG } from '../constants';
 import ErrorBoundary from '../components/ErrorBoundary';
-
-import { APP_CONFIG } from '../App';
 
 export async function rootLoader({ request }: { request: Request }) {
   const url = new URL(request.url);

@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { APP_CONFIG } from '../App';
+import { APP_CONFIG } from '../constants';
 
 export function PageSizeSelect() {
   const [searchParams] = useSearchParams();
