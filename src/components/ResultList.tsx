@@ -22,10 +22,9 @@ export const ResultList: React.FC<Props> = ({ imagesData, shouldThrowError }) =>
   }, [shouldThrowError]);
 
   if (errorFlag) throw new Error('Fake rendering error');
-  // ${isDetailsOpened && 'hidden'}
   return (
     <div
-      className={`relative w-full select-none space-y-2 md:block md:pr-4 
+      className={`relative w-full select-none space-y-2 md:block md:pr-4
       ${isLoading && 'pointer-events-none text-slate-400'} ${isDetailsOpened && 'hidden'}`}
     >
       {imagesData.map((imageData, imageIndex) => (
