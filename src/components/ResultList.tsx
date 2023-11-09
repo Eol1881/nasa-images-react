@@ -14,7 +14,6 @@ export const ResultList: React.FC<Props> = ({ imagesData, shouldThrowError }) =>
   const isNothingFound = imagesData.length === 0;
   const isDetailsOpened = location.pathname.startsWith('/details');
 
-  // Throwing fake rendering error mechanism
   const [errorFlag, setErrorFlag] = useState(false);
 
   useEffect(() => {

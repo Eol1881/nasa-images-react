@@ -31,7 +31,6 @@ export const Root: React.FC = () => {
     currentSearchQuery || localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || ''
   );
 
-  // Throwing fake rendering error mechanism
   const [shouldThrowError, setShouldThrowError] = useState(false);
   const throwErrorHandler = useCallback(() => {
     setShouldThrowError(true);
