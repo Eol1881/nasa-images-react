@@ -30,13 +30,7 @@ export const ResultList: React.FC<Props> = ({ imagesData, shouldThrowError }) =>
       {imagesData.map((imageData) => (
         <ResultItem key={extractImageData(imageData).nasaId} imageData={imageData}></ResultItem>
       ))}
-      <div
-        className={`font-pixelify text-2xl text-red-700 ${!isNothingFound && 'invisible hidden'} ${
-          isLoading && 'invisible'
-        }`}
-      >
-        NOTHING FOUND
-      </div>
+      {isNothingFound && !isLoading && <div className={`font-pixelify text-2xl text-red-700`}>NOTHING FOUND</div>}
     </div>
   );
 };
