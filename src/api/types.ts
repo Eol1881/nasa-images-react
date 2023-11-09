@@ -1,5 +1,5 @@
 export interface SearchResults {
-  totalPages: number;
+  totalPages?: number;
   imagesData: ImageData[];
 }
 

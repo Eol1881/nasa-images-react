@@ -27,7 +27,6 @@ export async function fetchDetailsFromApi(nasaID: string): Promise<SearchResults
 
     return {
       imagesData: data.collection.items,
-      totalPages: 1,
     };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);

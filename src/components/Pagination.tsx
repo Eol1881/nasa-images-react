@@ -2,13 +2,13 @@ import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
-  totalPages: number;
+  totalPages?: number;
 }
 
 export function Pagination(props: Props) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { totalPages } = props;
+  const totalPages = props.totalPages || 1;
   const pageIndex = Number(searchParams.get('page')) || 1;
   const isOnFirstPage = pageIndex === 1;
   const isOnLastPage = totalPages === pageIndex;
