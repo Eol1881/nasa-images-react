@@ -1,11 +1,17 @@
-import { useSearchParams } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigation, useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { SearchContext } from '../context/SearchContextProvider';
 
-interface Props {
-  totalPages: number;
-}
+export const Pagination: React.FC = () => {
+  const { searchResults } = useContext(SearchContext);
 
-export const Pagination: React.FC<Props> = ({ totalPages }) => {
+  const totalPages = searchResults.totalPages || 1;
+  const isNothingFound = !searchResults.imagesData.length;
+
+  const navigation = useNavigation();
+  const isLoading = navigation.state === 'loading';
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const pageIndex = Number(searchParams.get('page')) || 1;
@@ -23,35 +29,33 @@ export const Pagination: React.FC<Props> = ({ totalPages }) => {
   };
 
   return (
-    <div
-      className="flex justify-between pt-4 font-pixelify text-white"
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    >
-      <div>
-        Page: {pageIndex} / {totalPages}
+    !isLoading &&
+    !isNothingFound && (
+      <div className="flex justify-between pt-4 font-pixelify text-white">
+        <div>
+          Page: {pageIndex} / {totalPages}
+        </div>
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={() => {
+              paginationHandler(false);
+            }}
+            disabled={isOnFirstPage}
+            className={`transition-all ${isOnFirstPage ? 'text-red-500' : 'hover:text-sky-500'}`}
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => {
+              paginationHandler(true);
+            }}
+            disabled={isOnLastPage}
+            className={`transition-all ${isOnLastPage ? 'text-red-500' : 'hover:text-sky-500'}`}
+          >
+            Next
+          </button>
+        </div>
       </div>
-      <div className="flex justify-end space-x-4">
-        <button
-          onClick={() => {
-            paginationHandler(false);
-          }}
-          disabled={isOnFirstPage}
-          className={`transition-all ${isOnFirstPage ? 'text-red-500' : 'hover:text-sky-500'}`}
-        >
-          Prev
-        </button>
-        <button
-          onClick={() => {
-            paginationHandler(true);
-          }}
-          disabled={isOnLastPage}
-          className={`transition-all ${isOnLastPage ? 'text-red-500' : 'hover:text-sky-500'}`}
-        >
-          Next
-        </button>
-      </div>
-    </div>
+    )
   );
 };

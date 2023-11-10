@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigation } from 'react-router-dom';
 
 export const Loader: React.FC = () => {

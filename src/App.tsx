@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Root, rootLoader } from './routes/Root';
 import { ResultDetails, detailsLoader } from './routes/ResultDetails';
 import { ErrorPage } from './routes/ErrorPage';
+import { SearchContextProvider } from './context/SearchContextProvider';
+import React from 'react';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-export function App() {
-  return <RouterProvider router={router} />;
-}
+export const App: React.FC = () => {
+  return (
+    <SearchContextProvider>
+      <RouterProvider router={router} />
+    </SearchContextProvider>
+  );
+};

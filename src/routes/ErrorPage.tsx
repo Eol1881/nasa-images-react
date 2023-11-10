@@ -1,3 +1,4 @@
+import React from 'react';
 import { useRouteError } from 'react-router-dom';
 import { extractErrorMessage } from '../utils/extractErrorMessage';
 import { Link } from 'react-router-dom';

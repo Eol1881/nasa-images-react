@@ -1,5 +1,6 @@
+import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { APP_CONFIG } from '../constants';
+import { APP_CONFIG } from '../constants/constants';
 
 export const PageSizeSelect: React.FC = () => {
   const [searchParams] = useSearchParams();

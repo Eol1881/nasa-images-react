@@ -1,12 +1,13 @@
+import React from 'react';
 import { Params, useLoaderData, useSearchParams } from 'react-router-dom';
 import { fetchDetailsFromApi } from '../api/api';
 import { SearchResults } from '../api/types';
 import { Link } from 'react-router-dom';
 import { ImageMagnifier } from '../components/ImageMagnifier';
 import { extractImageData } from '../utils/extractImageData';
-import React from 'react';
 
 export async function detailsLoader({ params }: { params: Params }) {
+  console.log('-- result loader triggered');
   const nasaId = params.id;
   return fetchDetailsFromApi(nasaId || '');
 }
@@ -18,14 +19,8 @@ export const ResultDetails: React.FC = () => {
   const { imageUrl, location, photographer, dateCreated } = extractImageData(imageData);
 
   return (
-    <div
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-      className="relative flex h-fit w-fit basis-full select-none flex-col items-center justify-between rounded-l-lg bg-blue-300/25 p-4 pb-5 md:basis-2/3 lg:basis-2/5"
-    >
-      <ImageMagnifier key={imageUrl} imageUrl={imageUrl}></ImageMagnifier>
-
+    <div className="relative flex h-fit w-fit basis-full select-none flex-col items-center justify-between rounded-l-lg bg-blue-300/25 p-4 pb-5 md:basis-2/3 lg:basis-2/5">
+      <ImageMagnifier imageUrl={imageUrl}></ImageMagnifier>
       <div className="mt-2 flex w-full flex-col justify-between font-pixelify text-sm">
         <p>Location: {location || 'Unknown'}</p>
         <p>Photo: {photographer || 'Unknown'}</p>

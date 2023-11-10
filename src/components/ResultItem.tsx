@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ImageData } from '../api/types';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { extractImageData } from '../utils/extractImageData';
@@ -34,9 +34,6 @@ export const ResultItem: React.FC<Props> = ({ imageData }) => {
 
   return (
     <NavLink
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
       className="search-result"
       to={{
         pathname: `details/${nasaId}`,

@@ -1,6 +1,8 @@
 import React from 'react';
 import { extractErrorMessage } from '../utils/extractErrorMessage';
 import { Link } from 'react-router-dom';
+import { APP_CONFIG } from '../constants/constants';
+import { ISearchContext, SearchContext } from '../context/SearchContextProvider';
 
 interface State {
   hasError: boolean;
@@ -9,7 +11,6 @@ interface State {
 
 interface Props {
   children: React.ReactNode;
-  hardResetHandler: () => void;
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
@@ -22,12 +23,16 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error };
   }
 
+  static contextType = SearchContext;
+
   componentDidCatch() {
     return;
   }
 
   resetAndUpdate = () => {
-    this.props.hardResetHandler();
+    const { setShouldThrowError } = this.context as ISearchContext;
+    setShouldThrowError(false);
+    localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
     this.setState({ hasError: false, error: null });
   };
 
@@ -47,5 +52,3 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;
