@@ -1,40 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
 import { PageSizeSelect } from './PageSizeSelect';
 import { APP_CONFIG } from '../constants/constants';
 import { SearchContext } from '../context/SearchContextProvider';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const Header: React.FC = () => {
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const { setSearchQuery, searchQuery } = useContext(SearchContext);
+  const { setSearchQuery } = useContext(SearchContext);
 
-  const currentSearchQuery = searchParams.get('search');
-
-  const [searchInputValue, setSearchInputValue] = useState(
-    currentSearchQuery || localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || ''
-  );
-
-  useEffect(() => {
-    if (searchQuery === '') setSearchInputValue(searchQuery);
-  }, [searchQuery]);
+  const [searchInputValue, setSearchInputValue] = useState(localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || '');
 
   const searchHandler = () => {
     setSearchQuery(searchInputValue);
-    const currentSearchParams = new URLSearchParams(searchParams);
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('search', searchInputValue);
-    newSearchParams.delete('page');
-    if (currentSearchParams.toString() === newSearchParams.toString() || searchInputValue === '') return;
     localStorage.setItem(APP_CONFIG.LOCAL_STORAGE_PREFIX, searchInputValue);
-    navigate(`/?${newSearchParams}`);
   };
 
   const searchResetHandler = () => {
     setSearchInputValue('');
     localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
-    if (location.pathname === '/' && searchParams.toString() === '') return;
+    setSearchQuery('');
+    if (location.pathname === '/' && !location.search) return;
     navigate('/');
   };
 
@@ -54,6 +41,7 @@ export const Header: React.FC = () => {
 
       <div className="flex justify-stretch">
         <input
+          data-testid="search-input"
           id="search"
           className="min-w-0 flex-grow rounded-s-md bg-slate-300 p-1 pl-2 font-pixelify backdrop-blur-lg"
           value={searchInputValue}
@@ -66,7 +54,7 @@ export const Header: React.FC = () => {
         <button className="button-red !rounded-none" onClick={searchResetHandler}>
           Reset
         </button>
-        <button className="button-blue !rounded-s-none" onClick={searchHandler}>
+        <button data-testid="search-button" className="button-blue !rounded-s-none" onClick={searchHandler}>
           Search
         </button>
       </div>

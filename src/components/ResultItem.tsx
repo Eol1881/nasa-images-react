@@ -35,6 +35,7 @@ export const ResultItem: React.FC<Props> = ({ imageData }) => {
   return (
     <NavLink
       className="search-result"
+      data-testid="result-item"
       to={{
         pathname: `details/${nasaId}`,
         search: searchParams.toString(),
@@ -44,7 +45,13 @@ export const ResultItem: React.FC<Props> = ({ imageData }) => {
     >
       {imageTitle}
 
-      <Tooltip isHovered={isHovered} imageUrl={imageUrl} center={center} dateCreated={dateCreated}></Tooltip>
+      <Tooltip
+        isHovered={isHovered}
+        imageUrl={imageUrl}
+        center={center}
+        dateCreated={dateCreated}
+        imageTitle={imageTitle}
+      ></Tooltip>
     </NavLink>
   );
 };

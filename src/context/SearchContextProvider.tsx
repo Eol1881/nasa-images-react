@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useMemo, useState } from 'react';
+import React, { ReactNode, createContext, useEffect, useMemo, useState } from 'react';
 import { SearchResults } from '../api/types';
 
 export interface ISearchContext {
@@ -24,6 +24,10 @@ export const SearchContextProvider: React.FC<{ children: ReactNode }> = ({ child
   const [searchQuery, setSearchQuery] = useState('');
   const [shouldThrowError, setShouldThrowError] = useState(false);
 
+  useEffect(() => {
+    console.log('____ context changed ____');
+  });
+
   const contextValue = useMemo(() => {
     return {
       searchResults,
@@ -34,8 +38,6 @@ export const SearchContextProvider: React.FC<{ children: ReactNode }> = ({ child
       setSearchQuery,
     };
   }, [searchResults, shouldThrowError, searchQuery]);
-
-  console.log('++ context changed');
 
   return <SearchContext.Provider value={contextValue}>{children}</SearchContext.Provider>;
 };

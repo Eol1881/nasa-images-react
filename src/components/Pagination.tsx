@@ -1,19 +1,21 @@
 import React, { useContext } from 'react';
-import { useNavigation, useSearchParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { SearchContext } from '../context/SearchContextProvider';
 
-export const Pagination: React.FC = () => {
+interface Props {
+  isLoading: boolean;
+}
+
+export const Pagination: React.FC<Props> = ({ isLoading }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { searchResults } = useContext(SearchContext);
 
   const totalPages = searchResults.totalPages || 1;
   const isNothingFound = !searchResults.imagesData.length;
 
-  const navigation = useNavigation();
-  const isLoading = navigation.state === 'loading';
-
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const pageIndex = Number(searchParams.get('page')) || 1;
   const isOnFirstPage = pageIndex === 1;
   const isOnLastPage = totalPages === pageIndex;
@@ -25,7 +27,9 @@ export const Pagination: React.FC = () => {
     } else {
       searchParams.set('page', newPageIndex.toString());
     }
-    navigate(`/?${searchParams}`);
+    setSearchParams(searchParams);
+    if (location.pathname === '/' && !location.search) return;
+    navigate('/');
   };
 
   return (
