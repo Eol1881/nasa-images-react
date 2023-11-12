@@ -8,7 +8,10 @@ export const ErrorPage: React.FC = () => {
   console.error(error);
 
   return (
-    <div className="mx-auto my-auto flex flex-col items-center space-y-6 font-pixelify text-lg text-red-500">
+    <div
+      className="mx-auto my-auto flex flex-col items-center space-y-6 font-pixelify text-lg text-red-500"
+      data-testid="error-page"
+    >
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>
       <p>

@@ -5,7 +5,7 @@ import { ErrorPage } from './routes/ErrorPage';
 import { SearchContextProvider } from './context/SearchContextProvider';
 import React from 'react';
 
-const router = createBrowserRouter([
+export const routerConfig = [
   {
     path: '/',
     element: <Root />,
@@ -18,7 +18,9 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+];
+
+const router = createBrowserRouter(routerConfig);
 
 export const App: React.FC = () => {
   return (
