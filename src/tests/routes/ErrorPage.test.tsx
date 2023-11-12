@@ -1,14 +1,22 @@
 import { render, screen } from '@testing-library/react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { routerConfig } from '../../App';
-import { SearchContextProvider } from '../../context/SearchContextProvider';
+import { MockContextProvider } from '../mocks/MockContextProvider';
+import { Root } from '../../routes/Root';
 
-const mockRouterNotExistent = createMemoryRouter(routerConfig, {
+const testRouterConfig = routerConfig.map((route) => {
+  if (route.element.type === Root) {
+    return { ...route, element: <>Mock Root</> };
+  }
+  return route;
+});
+
+const mockRouterNotExistent = createMemoryRouter(testRouterConfig, {
   initialEntries: ['/non-existent-path'],
   initialIndex: 0,
 });
 
-const mockRouterExistent = createMemoryRouter(routerConfig, {
+const mockRouterExistent = createMemoryRouter(testRouterConfig, {
   initialEntries: ['/'],
   initialIndex: 0,
 });
@@ -16,9 +24,9 @@ const mockRouterExistent = createMemoryRouter(routerConfig, {
 describe('Testing 404 page component', () => {
   it('renders ErrorPage on non-existent path', () => {
     render(
-      <SearchContextProvider>
+      <MockContextProvider>
         <RouterProvider router={mockRouterNotExistent} />
-      </SearchContextProvider>
+      </MockContextProvider>
     );
 
     const errorPageComponent = screen.getByTestId('error-page');
@@ -26,9 +34,9 @@ describe('Testing 404 page component', () => {
   });
   it('does not render ErrorPage on existent path', () => {
     render(
-      <SearchContextProvider>
+      <MockContextProvider>
         <RouterProvider router={mockRouterExistent} />
-      </SearchContextProvider>
+      </MockContextProvider>
     );
 
     const errorPageComponent = screen.queryByTestId('error-page');
