@@ -12,10 +12,6 @@ const mockRouter = createMemoryRouter(
       path: '/',
       element: <ResultList isLoading={false} />,
     },
-    {
-      path: '/details',
-      element: <>Details</>,
-    },
   ],
   {
     initialEntries: ['/'],
@@ -41,5 +37,15 @@ describe('Testing ResultList component', () => {
     render(<ResultList isLoading={false} />);
     const message = screen.getByText(/NOTHING FOUND/i);
     expect(message).toBeInTheDocument();
+  });
+  it('displays Loader component when loading', () => {
+    render(<ResultList isLoading={true} />);
+    const message = screen.getByTestId('loader');
+    expect(message).toBeInTheDocument();
+  });
+  it('does not display Loader component when not loading', () => {
+    render(<ResultList isLoading={false} />);
+    const message = screen.queryByTestId('loader');
+    expect(message).not.toBeInTheDocument();
   });
 });

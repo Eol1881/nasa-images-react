@@ -12,10 +12,6 @@ const mockRouter = createMemoryRouter(
       path: '/',
       element: <Pagination isLoading={false} />,
     },
-    {
-      path: '/details',
-      element: <>Details</>,
-    },
   ],
   {
     initialEntries: ['/'],
