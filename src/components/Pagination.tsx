@@ -28,8 +28,12 @@ export const Pagination: React.FC<Props> = ({ isLoading }) => {
       searchParams.set('page', newPageIndex.toString());
     }
     setSearchParams(searchParams);
-    if (location.pathname === '/' && !location.search) return;
-    navigate('/');
+
+    if (location.pathname === '/') return;
+    navigate({
+      pathname: '/',
+      search: searchParams.toString(),
+    });
   };
 
   return (
