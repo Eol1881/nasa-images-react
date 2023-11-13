@@ -9,7 +9,7 @@ export const ThrowFakeErrorButton: React.FC = memo(() => {
   }, [setShouldThrowError]);
 
   return (
-    <button className="button-red mt-4" onClick={throwErrorHandler}>
+    <button data-testid="throw-fake-error-button" className="button-red mt-4" onClick={throwErrorHandler}>
       Throw fake error
     </button>
   );

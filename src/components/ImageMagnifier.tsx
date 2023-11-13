@@ -39,6 +39,7 @@ export const ImageMagnifier: React.FC<Props> = ({ imageUrl }) => {
 
   return (
     <div
+      data-testid="magnifier-container"
       className={`relative cursor-crosshair transition-all ${isLoading && 'overlay'}`}
       onMouseEnter={() => setShowMagnifier(true)}
       onMouseLeave={() => setShowMagnifier(false)}
@@ -53,6 +54,7 @@ export const ImageMagnifier: React.FC<Props> = ({ imageUrl }) => {
 
       {showMagnifier && (
         <div
+          data-testid="magnifier"
           style={{
             left: `${cursorPosition.x - 100}px`,
             top: `${cursorPosition.y - 100}px`,

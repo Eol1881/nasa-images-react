@@ -39,7 +39,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="mx-auto my-auto flex flex-col items-center font-pixelify text-lg text-red-500">
+        <div
+          data-testid="error-boundary"
+          className="mx-auto my-auto flex flex-col items-center font-pixelify text-lg text-red-500"
+        >
           <h1>Oops! Something went wrong.</h1>
           <i>{extractErrorMessage(this.state.error)}</i>
           <Link className="button-blue my-4" to="/" onClick={this.resetAndUpdate}>
