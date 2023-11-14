@@ -1,43 +1,70 @@
-import React from 'react';
-import { Params, useLoaderData, useNavigation, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { fetchDetailsFromApi } from '../api/api';
-import { SearchResults } from '../api/types';
+import { ImageData } from '../api/types';
 import { Link } from 'react-router-dom';
 import { ImageMagnifier } from '../components/ImageMagnifier';
 import { extractImageData } from '../utils/extractImageData';
 import { Loader } from '../components/Loader';
 
-export async function detailsLoader({ params }: { params: Params }) {
-  const nasaId = params.id;
-  return fetchDetailsFromApi(nasaId || '');
-}
-
 export const ResultDetails: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const searchResults = useLoaderData() as SearchResults;
-  const imageData = searchResults.imagesData[0];
-  const { imageUrl, location, photographer, dateCreated } = extractImageData(imageData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageData, setImageData] = useState<ImageData | null>(null);
 
-  const isLoading = useNavigation().state === 'loading';
+  const [searchParams] = useSearchParams();
+  const nasaId = searchParams.get('details');
+
+  useEffect(() => {
+    if (!nasaId) return;
+    let isMounted = true;
+
+    const fetchDetails = async () => {
+      setIsLoading(true);
+      try {
+        const detailsData = await fetchDetailsFromApi(nasaId);
+        if (isMounted) setImageData(detailsData.imagesData[0]);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [nasaId]);
+
+  const getUpdatedSearchParams = () => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete('details');
+    return `?${newSearchParams.toString()}`;
+  };
 
   return (
-    <div
-      data-testid="result-details"
-      className="relative flex h-fit w-fit basis-full select-none flex-col items-center justify-between rounded-l-lg bg-blue-300/25 p-4 pb-5 md:basis-2/3 lg:basis-2/4"
-    >
-      <ImageMagnifier imageUrl={imageUrl}></ImageMagnifier>
-      {isLoading && <Loader></Loader>}
-      <div className="mt-2 flex w-full flex-col justify-between font-pixelify text-sm">
-        <p>Location: {location || 'Unknown'}</p>
-        <p>Photo: {photographer || 'Unknown'}</p>
-        <p>Date: {dateCreated || 'Unknown'}</p>
-      </div>
-      <Link
-        to={{ pathname: '/', search: searchParams.toString() }}
-        className=" absolute bottom-0 right-0 inline-block p-4 font-pixelify transition-all hover:scale-110"
+    nasaId &&
+    imageData && (
+      <div
+        data-testid="result-details"
+        className="result-details"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
-        CLOSE ❌
-      </Link>
-    </div>
+        <ImageMagnifier imageUrl={extractImageData(imageData).imageUrl} isLoading={isLoading}></ImageMagnifier>
+        {isLoading && <Loader></Loader>}
+        <div className="mt-2 flex w-full flex-col justify-between font-pixelify text-sm">
+          <p>Location: {extractImageData(imageData).location || 'Unknown'}</p>
+          <p>Photo: {extractImageData(imageData).photographer || 'Unknown'}</p>
+          <p>Date: {extractImageData(imageData).dateCreated || 'Unknown'}</p>
+        </div>
+        <Link
+          to={{ search: getUpdatedSearchParams() }}
+          className=" absolute bottom-0 right-0 inline-block p-4 font-pixelify transition-all hover:scale-110"
+        >
+          CLOSE ❌
+        </Link>
+      </div>
+    )
   );
 };

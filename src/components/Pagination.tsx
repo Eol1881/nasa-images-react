@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { SearchContext } from '../context/SearchContextProvider';
 
 interface Props {
@@ -7,9 +7,6 @@ interface Props {
 }
 
 export const Pagination: React.FC<Props> = ({ isLoading }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const { searchResults } = useContext(SearchContext);
 
   const totalPages = searchResults.totalPages || 1;
@@ -22,18 +19,15 @@ export const Pagination: React.FC<Props> = ({ isLoading }) => {
 
   const paginationHandler = (isNext: boolean) => {
     const newPageIndex = isNext ? pageIndex + 1 : pageIndex - 1;
+    const newSearchParams = new URLSearchParams(searchParams);
     if (newPageIndex === 1) {
-      searchParams.delete('page');
+      newSearchParams.delete('page');
     } else {
-      searchParams.set('page', newPageIndex.toString());
+      newSearchParams.set('page', newPageIndex.toString());
     }
-    setSearchParams(searchParams);
-
-    if (location.pathname === '/') return;
-    navigate({
-      pathname: '/',
-      search: searchParams.toString(),
-    });
+    newSearchParams.delete('details');
+    if (newSearchParams.toString() === searchParams.toString()) return;
+    setSearchParams(newSearchParams);
   };
 
   return (

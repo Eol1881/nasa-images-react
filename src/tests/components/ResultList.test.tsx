@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { ResultList } from '../../components/ResultList';
 import { ImageData } from '../../api/types';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { BrowserRouter, RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { mockImageData } from '../mocks/mockImageData';
 import { MockContextProvider } from '../mocks/MockContextProvider';
 
@@ -34,17 +34,17 @@ describe('Testing ResultList component', () => {
     expect(resultItems.length).toBe(mockImagesData.length);
   });
   it('displays the appropriate message when no ResultItem is present', () => {
-    render(<ResultList isLoading={false} />);
+    render(<ResultList isLoading={false} />, { wrapper: BrowserRouter });
     const message = screen.getByText(/NOTHING FOUND/i);
     expect(message).toBeInTheDocument();
   });
   it('displays Loader component when loading', () => {
-    render(<ResultList isLoading={true} />);
+    render(<ResultList isLoading={true} />, { wrapper: BrowserRouter });
     const message = screen.getByTestId('loader');
     expect(message).toBeInTheDocument();
   });
   it('does not display Loader component when not loading', () => {
-    render(<ResultList isLoading={false} />);
+    render(<ResultList isLoading={false} />, { wrapper: BrowserRouter });
     const message = screen.queryByTestId('loader');
     expect(message).not.toBeInTheDocument();
   });

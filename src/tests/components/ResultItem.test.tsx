@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 describe('Testing ResultItem component', () => {
   it('renders the relevant ResultItem data', () => {
-    render(<ResultItem imageData={mockImageData} />, { wrapper: BrowserRouter });
+    render(<ResultItem imageData={mockImageData} isActive={false} />, { wrapper: BrowserRouter });
 
     const resultItem = screen.getByTestId('result-item');
 

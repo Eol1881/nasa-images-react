@@ -7,7 +7,7 @@ const mockRouter = createMemoryRouter(
   [
     {
       path: '/',
-      element: <ImageMagnifier imageUrl="test-url" />,
+      element: <ImageMagnifier isLoading={false} imageUrl="test-url" />,
     },
   ],
   {

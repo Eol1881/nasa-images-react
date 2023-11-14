@@ -15,28 +15,37 @@
   @apply button rounded-e-md bg-sky-700 text-white transition-all hover:bg-sky-800 active:bg-sky-300 active:text-black sm:px-10;
 }
 
-.search-result {
-  @apply relative -ml-4 block cursor-pointer select-none rounded-r-md p-1 pl-8 transition-all duration-500 hover:bg-slate-500 hover:text-slate-300;
-}
-
-.active {
-  @apply pointer-events-none -ml-4 rounded-l-none bg-slate-500 pl-4 text-slate-300;
-}
-
-.tooltip {
-  @apply absolute left-0 top-0 z-10 mt-8 overflow-hidden 
-  rounded-b-md bg-slate-500 text-black shadow-lg no-hover:hidden;
-  @apply h-0 transition-none;
-}
-
-.tooltip--hovered {
-  @apply h-48 transition-all duration-500 ease-chilly;
-}
-
 .overlay {
   @apply relative;
 }
 .overlay::after {
   @apply absolute left-0 top-0 h-full w-full bg-black/50;
   content: '';
+}
+
+.result-list {
+  @apply flex w-fit flex-wrap justify-evenly gap-4;
+}
+
+.result-item {
+  max-width: 14rem;
+  box-shadow: rgba(40, 40, 40, 0.4) 4px 4px 5px;
+  @apply z-20 h-fit w-full rounded-md bg-slate-100/90 p-2 font-pixelify transition-all duration-300 hover:bg-blue-400/90 hover:text-slate-300;
+}
+
+.result-item--active {
+  @apply bg-blue-500;
+}
+
+.result-item__img {
+  @apply h-48 w-full object-cover;
+}
+
+.result-details {
+  box-shadow: rgba(40, 40, 40, 0.4) 4px 4px 5px;
+  @apply sticky top-8 z-20 -mr-4 h-fit basis-full select-none rounded-l-2xl bg-red-600/80 p-4 pr-8;
+}
+
+.main {
+  background-image: url('https://img.freepik.com/free-vector/space-seamless-pattern-black-white-version_1284-38816.jpg?w=740&t=st=1699961540~exp=1699962140~hmac=5ae6b03f5742061ac41fc95ba19e104fbc132869ca1601f106ec415a3768ff6b');
 }

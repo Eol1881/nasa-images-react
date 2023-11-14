@@ -1,21 +1,16 @@
 import React from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { APP_CONFIG } from '../constants/constants';
 
 export const PageSizeSelect: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const currentPageSize = searchParams.get('size') || APP_CONFIG.DEFAULT_PAGE_SIZE;
 
   const changeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (e.target.value === APP_CONFIG.DEFAULT_PAGE_SIZE.toString()) newSearchParams.delete('size');
-    else newSearchParams.set('size', e.target.value);
-
-    newSearchParams.delete('page');
-
+    const newSearchParams = new URLSearchParams();
+    if (e.target.value !== APP_CONFIG.DEFAULT_PAGE_SIZE.toString()) newSearchParams.set('size', e.target.value);
     if (newSearchParams.toString() === searchParams.toString()) return;
-    navigate(`/?${newSearchParams}`);
+    setSearchParams(newSearchParams);
   };
 
   return (

@@ -1,57 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { ImageData } from '../api/types';
-import { NavLink, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { extractImageData } from '../utils/extractImageData';
-import { Tooltip } from './Tooltip';
 
 interface Props {
   imageData: ImageData;
+  isActive: boolean;
 }
 
-export const ResultItem: React.FC<Props> = ({ imageData }) => {
+export const ResultItem: React.FC<Props> = ({ imageData, isActive }) => {
   const [searchParams] = useSearchParams();
-  const [isHovered, setIsHovered] = useState(false);
-  const tooltipTimer = useRef(0);
 
-  const { imageUrl, imageTitle, nasaId, center, dateCreated } = extractImageData(imageData);
+  const { imageUrl, imageTitle, nasaId, center, dateCreated } = extractImageData(imageData) || {};
+  const [isImageFullyLoaded, setIsImageFullyLoaded] = useState(false); // TODO: add loader
 
-  const mouseEnterHandler = () => {
-    tooltipTimer.current = window.setTimeout(() => {
-      setIsHovered(true);
-    }, 300);
+  const getUpdatedSearchParams = () => {
+    nasaId && searchParams.set('details', nasaId);
+    return `?${searchParams.toString()}`;
   };
-
-  const mouseLeaveHandler = () => {
-    window.clearTimeout(tooltipTimer.current);
-    setIsHovered(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      window.clearTimeout(tooltipTimer.current);
-    };
-  }, []);
 
   return (
-    <NavLink
-      className="search-result"
+    <Link
+      className={`result-item ${isActive && 'result-item--active'}`}
       data-testid="result-item"
       to={{
-        pathname: `details/${nasaId}`,
-        search: searchParams.toString(),
+        search: getUpdatedSearchParams(),
       }}
-      onMouseEnter={mouseEnterHandler}
-      onMouseLeave={mouseLeaveHandler}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
-      {imageTitle}
+      <h5 className="h-12 text-center">{imageTitle}</h5>
 
-      <Tooltip
-        isHovered={isHovered}
-        imageUrl={imageUrl}
-        center={center}
-        dateCreated={dateCreated}
-        imageTitle={imageTitle}
-      ></Tooltip>
-    </NavLink>
+      <img
+        src={imageUrl}
+        alt={imageTitle}
+        className={`result-item__img ${!isImageFullyLoaded && 'opacity-0'}`}
+        onLoad={() => {
+          setIsImageFullyLoaded(true);
+        }}
+      />
+
+      <p>Center: {<span>{center}</span>}</p>
+      <p>{dateCreated}</p>
+    </Link>
   );
 };

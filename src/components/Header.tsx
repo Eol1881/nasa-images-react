@@ -2,18 +2,19 @@ import React, { useContext, useState } from 'react';
 import { PageSizeSelect } from './PageSizeSelect';
 import { APP_CONFIG } from '../constants/constants';
 import { SearchContext } from '../context/SearchContextProvider';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 export const Header: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { setSearchQuery } = useContext(SearchContext);
+  const { searchQuery, setSearchQuery } = useContext(SearchContext);
 
   const [searchInputValue, setSearchInputValue] = useState(localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || '');
 
   const searchHandler = () => {
+    if (searchInputValue === searchQuery && searchParams.toString() === '') return;
     setSearchQuery(searchInputValue);
+    setSearchParams('');
     localStorage.setItem(APP_CONFIG.LOCAL_STORAGE_PREFIX, searchInputValue);
   };
 
@@ -21,8 +22,8 @@ export const Header: React.FC = () => {
     setSearchInputValue('');
     localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
     setSearchQuery('');
-    if (location.pathname === '/' && !location.search) return;
-    navigate('/');
+    if (!searchParams) return;
+    setSearchParams('');
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

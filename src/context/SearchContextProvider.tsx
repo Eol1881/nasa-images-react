@@ -1,5 +1,6 @@
 import React, { ReactNode, createContext, useEffect, useMemo, useState } from 'react';
 import { SearchResults } from '../api/types';
+import { APP_CONFIG } from '../constants/constants';
 
 export interface ISearchContext {
   searchResults: SearchResults;
@@ -21,7 +22,7 @@ export const SearchContext = createContext<ISearchContext>({
 
 export const SearchContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [searchResults, setSearchResults] = useState<SearchResults>({ imagesData: [] });
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || '');
   const [shouldThrowError, setShouldThrowError] = useState(false);
 
   useEffect(() => {
