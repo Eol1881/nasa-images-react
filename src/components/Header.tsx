@@ -1,29 +1,29 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { PageSizeSelect } from './PageSizeSelect';
 import { APP_CONFIG } from '../constants/constants';
-import { SearchContext } from '../context/SearchContextProvider';
 import { useSearchParams } from 'react-router-dom';
+import { GlobalState } from '../store/store';
+import { setSearchQuery } from '../store/slices/searchSlice';
 
 export const Header: React.FC = () => {
+  const [searchInputValue, setSearchInputValue] = useState(localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || '');
+
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { searchQuery, setSearchQuery } = useContext(SearchContext);
-
-  const [searchInputValue, setSearchInputValue] = useState(localStorage.getItem(APP_CONFIG.LOCAL_STORAGE_PREFIX) || '');
+  const dispatch = useDispatch();
+  const searchQuery = useSelector((state: GlobalState) => state.search.searchQuery);
 
   const searchHandler = () => {
     if (searchInputValue === searchQuery && searchParams.toString() === '') return;
-    setSearchQuery(searchInputValue);
+    dispatch(setSearchQuery(searchInputValue));
     setSearchParams('');
-    localStorage.setItem(APP_CONFIG.LOCAL_STORAGE_PREFIX, searchInputValue);
   };
 
   const searchResetHandler = () => {
-    setSearchInputValue('');
-    localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
-    setSearchQuery('');
-    if (!searchParams) return;
-    setSearchParams('');
+    if (searchInputValue !== '') setSearchInputValue('');
+    if (searchParams.toString() !== '') setSearchParams('');
+    if (searchQuery) dispatch(setSearchQuery(''));
   };
 
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

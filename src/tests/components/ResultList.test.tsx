@@ -1,51 +1,81 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+import { setupServer } from 'msw/node';
+import { handlers } from '../api/handlers';
+import { HttpResponse, http } from 'msw';
+import { emptySearchResponseMock, searchResponseMock } from '../api/responses';
+
+import store from '../../store/store';
+import { nasaApiSlice } from '../../api/nasaApiSlice';
 import { ResultList } from '../../components/ResultList';
-import { ImageData } from '../../api/types';
-import { BrowserRouter, RouterProvider, createMemoryRouter } from 'react-router-dom';
-import { mockImageData } from '../mocks/mockImageData';
-import { MockContextProvider } from '../mocks/MockContextProvider';
 
-const mockRouter = createMemoryRouter(
-  [
-    {
-      path: '/',
-      element: <ResultList isLoading={false} />,
-    },
-  ],
-  {
-    initialEntries: ['/'],
-    initialIndex: 0,
-  }
-);
+const server = setupServer(...handlers);
 
-const mockImagesData: ImageData[] = [mockImageData];
+beforeAll(() => server.listen());
+afterEach(() => {
+  server.resetHandlers();
+  store.dispatch(nasaApiSlice.util.resetApiState());
+});
+beforeEach(() => {
+  server.resetHandlers();
+  store.dispatch(nasaApiSlice.util.resetApiState());
+});
+afterAll(() => server.close());
 
 describe('Testing ResultList component', () => {
-  it('renders the correct number of ResultItem components', () => {
+  it('renders the correct number of ResultItem components', async () => {
     render(
-      <MockContextProvider mockImagesData={mockImagesData}>
-        <RouterProvider router={mockRouter} />
-      </MockContextProvider>
+      <Provider store={store}>
+        <MemoryRouter>
+          <ResultList />
+        </MemoryRouter>
+      </Provider>
     );
+
+    await waitFor(() => {
+      screen.getAllByTestId('result-item');
+    });
 
     const resultItems = screen.getAllByTestId('result-item');
 
-    expect(resultItems.length).toBe(mockImagesData.length);
-  });
-  it('displays the appropriate message when no ResultItem is present', () => {
-    render(<ResultList isLoading={false} />, { wrapper: BrowserRouter });
-    const message = screen.getByText(/NOTHING FOUND/i);
-    expect(message).toBeInTheDocument();
+    expect(resultItems.length).toBe(searchResponseMock.collection.items.length);
   });
   it('displays Loader component when loading', () => {
-    render(<ResultList isLoading={true} />, { wrapper: BrowserRouter });
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <ResultList />
+        </MemoryRouter>
+      </Provider>
+    );
     const message = screen.getByTestId('loader');
     expect(message).toBeInTheDocument();
   });
-  it('does not display Loader component when not loading', () => {
-    render(<ResultList isLoading={false} />, { wrapper: BrowserRouter });
-    const message = screen.queryByTestId('loader');
-    expect(message).not.toBeInTheDocument();
+  it('displays the appropriate message when no ResultItem is present', async () => {
+    server.use(
+      http.get(`https://images-api.nasa.gov/search*`, () => {
+        return HttpResponse.json(emptySearchResponseMock, {
+          status: 200,
+        });
+      })
+    );
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <ResultList />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      screen.getByTestId('nothing-found');
+    });
+
+    const message = screen.getByTestId('nothing-found');
+    expect(message).toBeInTheDocument();
   });
 });

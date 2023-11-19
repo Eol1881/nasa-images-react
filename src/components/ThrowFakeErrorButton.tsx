@@ -1,12 +1,13 @@
-import { memo, useCallback, useContext } from 'react';
-import { SearchContext } from '../context/SearchContextProvider';
+import { memo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { setShouldThrowFakeError } from '../store/slices/loadingStateSlice';
 
 export const ThrowFakeErrorButton: React.FC = memo(() => {
-  const { setShouldThrowError } = useContext(SearchContext);
+  const dispatch = useDispatch();
 
   const throwErrorHandler = useCallback(() => {
-    setShouldThrowError(true);
-  }, [setShouldThrowError]);
+    dispatch(setShouldThrowFakeError(true));
+  }, [dispatch]);
 
   return (
     <button data-testid="throw-fake-error-button" className="button-red mt-4" onClick={throwErrorHandler}>

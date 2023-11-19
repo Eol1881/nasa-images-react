@@ -2,7 +2,8 @@ import React from 'react';
 import { extractErrorMessage } from '../utils/extractErrorMessage';
 import { Link } from 'react-router-dom';
 import { APP_CONFIG } from '../constants/constants';
-import { ISearchContext, SearchContext } from '../context/SearchContextProvider';
+import { useDispatch } from 'react-redux';
+import { setShouldThrowFakeError } from '../store/slices/loadingStateSlice';
 
 interface State {
   hasError: boolean;
@@ -23,15 +24,14 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error };
   }
 
-  static contextType = SearchContext;
-
   componentDidCatch() {
     return;
   }
 
   resetAndUpdate = () => {
-    const { setShouldThrowError } = this.context as ISearchContext;
-    setShouldThrowError(false);
+    const dispatch = useDispatch();
+    dispatch(setShouldThrowFakeError(true));
+
     localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
     this.setState({ hasError: false, error: null });
   };

@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { fetchDetailsFromApi } from '../api/api';
-import { ImageData } from '../api/types';
 import { Link } from 'react-router-dom';
-import { ImageMagnifier } from '../components/ImageMagnifier';
+import { ImageMagnifier } from './ImageMagnifier';
 import { extractImageData } from '../utils/extractImageData';
-import { Loader } from '../components/Loader';
+import { Loader } from './Loader';
+import { useGetItemQuery } from '../api/nasaApiSlice';
 
 export const ResultDetails: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [imageData, setImageData] = useState<ImageData | null>(null);
-
   const [searchParams] = useSearchParams();
-  const nasaId = searchParams.get('details');
+  const nasaId = searchParams.get('details') as string;
 
-  useEffect(() => {
-    if (!nasaId) return;
-    let isMounted = true;
+  const { data, isFetching } = useGetItemQuery({
+    nasaId: nasaId,
+  });
 
-    const fetchDetails = async () => {
-      setIsLoading(true);
-      try {
-        const detailsData = await fetchDetailsFromApi(nasaId);
-        if (isMounted) setImageData(detailsData.imagesData[0]);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-    };
-
-    fetchDetails();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [nasaId]);
+  const imageData = data?.imagesData[0];
 
   const getUpdatedSearchParams = () => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -51,8 +32,8 @@ export const ResultDetails: React.FC = () => {
           e.stopPropagation();
         }}
       >
-        <ImageMagnifier imageUrl={extractImageData(imageData).imageUrl} isLoading={isLoading}></ImageMagnifier>
-        {isLoading && <Loader></Loader>}
+        {isFetching && <Loader></Loader>}
+        <ImageMagnifier imageUrl={extractImageData(imageData).imageUrl} isLoading={isFetching}></ImageMagnifier>
         <div className="mt-2 flex w-full flex-col justify-between font-pixelify text-sm">
           <p>Location: {extractImageData(imageData).location || 'Unknown'}</p>
           <p>Photo: {extractImageData(imageData).photographer || 'Unknown'}</p>
@@ -60,7 +41,8 @@ export const ResultDetails: React.FC = () => {
         </div>
         <Link
           to={{ search: getUpdatedSearchParams() }}
-          className=" absolute bottom-0 right-0 inline-block p-4 font-pixelify transition-all hover:scale-110"
+          className="absolute bottom-0 right-0 inline-block p-4 font-pixelify transition-all hover:scale-110"
+          data-testid="close-details-button"
         >
           CLOSE ❌
         </Link>

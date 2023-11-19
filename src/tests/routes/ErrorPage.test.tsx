@@ -1,8 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
 import { routerConfig } from '../../App';
-import { MockContextProvider } from '../mocks/MockContextProvider';
 import { Root } from '../../routes/Root';
+import store from '../../store/store';
 
 const testRouterConfig = routerConfig.map((route) => {
   if (route.element.type === Root) {
@@ -24,9 +26,9 @@ const mockRouterExistent = createMemoryRouter(testRouterConfig, {
 describe('Testing 404 page component', () => {
   it('renders ErrorPage on non-existent path', () => {
     render(
-      <MockContextProvider>
+      <Provider store={store}>
         <RouterProvider router={mockRouterNotExistent} />
-      </MockContextProvider>
+      </Provider>
     );
 
     const errorPageComponent = screen.getByTestId('error-page');
@@ -34,9 +36,9 @@ describe('Testing 404 page component', () => {
   });
   it('does not render ErrorPage on existent path', () => {
     render(
-      <MockContextProvider>
+      <Provider store={store}>
         <RouterProvider router={mockRouterExistent} />
-      </MockContextProvider>
+      </Provider>
     );
 
     const errorPageComponent = screen.queryByTestId('error-page');

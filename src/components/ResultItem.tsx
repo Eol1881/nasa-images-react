@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageData } from '../api/types';
+import { ImageData } from '../types/api';
 import { Link, useSearchParams } from 'react-router-dom';
 import { extractImageData } from '../utils/extractImageData';
 

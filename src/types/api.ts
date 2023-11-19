@@ -3,7 +3,7 @@ export interface SearchResults {
   imagesData: ImageData[];
 }
 
-export interface NasaApiRespone {
+export interface NasaApiResponse {
   collection: {
     metadata: {
       total_hits: number;
@@ -27,9 +27,6 @@ export interface ImageData {
       description: string;
     },
   ];
-  metadata: {
-    total_hits: number;
-  };
   links?: [
     {
       href: string;

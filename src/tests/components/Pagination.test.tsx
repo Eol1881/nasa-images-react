@@ -1,47 +1,45 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { Pagination } from '../../components/Pagination';
+import { describe, expect, it } from 'vitest';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-import { mockImageData } from '../mocks/mockImageData';
 import userEvent from '@testing-library/user-event';
-import { ImageData } from '../../api/types';
-import { MockContextProvider } from '../mocks/MockContextProvider';
+import store from '../../store/store';
+import { Provider } from 'react-redux';
 
-const mockRouter = createMemoryRouter(
-  [
-    {
-      path: '/',
-      element: <Pagination isLoading={false} />,
-    },
-  ],
-  {
-    initialEntries: ['/'],
-    initialIndex: 0,
-  }
-);
+import { routerConfig } from '../../App';
 
-const mockImagesData: ImageData[] = [mockImageData];
+const mockRouter = createMemoryRouter(routerConfig, {
+  initialEntries: ['/'],
+  initialIndex: 0,
+});
 
 describe('Testing Pagination component', () => {
   it('updates URL query parameter when page changes', async () => {
     render(
-      <MockContextProvider mockImagesData={mockImagesData}>
+      <Provider store={store}>
         <RouterProvider router={mockRouter} />
-      </MockContextProvider>
+      </Provider>
     );
 
     expect(mockRouter.state.location.pathname).toEqual('/');
 
+    await waitFor(() => {
+      screen.getByText('Next');
+    });
+
     const nextButton = screen.getByText('Next');
+
+    await userEvent.click(nextButton);
+
+    expect(mockRouter.state.location.search).toEqual('?page=2');
+
+    await waitFor(() => {
+      screen.getByText('Prev');
+    });
+
     const prevButton = screen.getByText('Prev');
 
-    userEvent.click(nextButton);
-    await waitFor(() => {
-      expect(mockRouter.state.location.search).toEqual('?page=2');
-    });
+    await userEvent.click(prevButton);
 
-    userEvent.click(prevButton);
-    await waitFor(() => {
-      expect(mockRouter.state.location.search).toEqual('');
-    });
+    expect(mockRouter.state.location.search).toEqual('');
   });
 });

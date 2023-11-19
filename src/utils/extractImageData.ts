@@ -1,4 +1,4 @@
-import { ImageData } from '../api/types';
+import { ImageData } from '../types/api';
 import { formatDate } from './formatDate';
 import { trimImageName } from './trimImageName';
 

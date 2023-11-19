@@ -64,7 +64,7 @@ export const ImageMagnifier: React.FC<Props> = ({ imageUrl, isLoading }) => {
             style={{
               backgroundImage: `url(${imageUrl})`,
               backgroundPosition: `${position.x}% ${position.y}%`,
-              backgroundSize: `${isMouseDown ? '800%' : '300%'}`,
+              backgroundSize: `${isMouseDown ? '400%' : '200%'}`,
               transition: 'background-size 800ms ease',
             }}
           />
