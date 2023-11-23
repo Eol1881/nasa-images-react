@@ -1,0 +1,10 @@
+.item {
+  max-width: 14rem;
+  box-shadow: rgba(40, 40, 40, 0.4) 4px 4px 5px;
+  /* @apply z-20 h-fit w-full cursor-pointer rounded-md bg-slate-100/95 p-2 transition-all duration-300 hover:bg-blue-400/95; */
+  @apply z-20 h-fit w-full cursor-pointer rounded-md bg-black/90 p-2 text-slate-200 transition-all duration-300 hover:bg-blue-500/90 hover:text-black;
+}
+
+.itemActive {
+  @apply bg-blue-500;
+}
