@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { PageSizeSelect } from './PageSizeSelect';
 import { APP_CONFIG } from '../../constants/constants';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { QueryParams } from '@/types/general';
 import { ThrowErrorButton } from './ThrowErrorButton';
@@ -46,7 +45,6 @@ export const Header: React.FC = () => {
     <header className="relative mt-4 space-y-4 rounded-lg bg-white px-2 py-3 text-center text-black shadow-md sm:px-4 sm:text-left">
       <h1 className=" select-none text-3xl font-bold">
         <span className="inline-block duration-2000 ease-cool hover:rotate-180">🚀</span> NASA Images Viewer
-        <Link href={'/about'}>TO ABOUT</Link>
       </h1>
 
       <ThrowErrorButton></ThrowErrorButton>

@@ -4,17 +4,31 @@ import React from 'react';
 import { ImageData } from '@/types/api';
 import { extractImageData } from '@/utils/extractImageData';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface Props {
   imageData: ImageData;
-  isActive: boolean;
 }
-ImageData;
-export const ResultItem: React.FC<Props> = ({ imageData, isActive }) => {
-  const { imageUrl, imageTitle, center, dateCreated } = extractImageData(imageData) || {};
+
+export const ResultItem: React.FC<Props> = ({ imageData }) => {
+  const router = useRouter();
+  const { imageUrl, imageTitle, nasaId, center, dateCreated } = extractImageData(imageData) || {};
+
+  const isActive = nasaId === router.query.details;
 
   return (
-    <div className={`${styles.item} ${isActive && styles.itemActive}`} data-testid="result-item">
+    <Link
+      className={`${styles.item} ${isActive && styles.itemActive}`}
+      data-testid="result-item"
+      href={{
+        query: { ...router.query, details: nasaId },
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      scroll={false}
+    >
       <h5 className="h-12 text-center ">{imageTitle}</h5>
 
       <Image
@@ -23,11 +37,11 @@ export const ResultItem: React.FC<Props> = ({ imageData, isActive }) => {
         className={`h-48 w-full object-cover`}
         width={0}
         height={0}
-        sizes="100vw" // TODO: ???
+        sizes="100vw"
       />
 
       <p>Center: {<span>{center}</span>}</p>
       <p>{dateCreated}</p>
-    </div>
+    </Link>
   );
 };

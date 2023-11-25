@@ -1,49 +1,54 @@
 import Head from 'next/head';
 import { Header } from '@/components/Header/Header';
-import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 import { ResultList } from '@/components/ResultList/ResultList';
 import { GetServerSideProps } from 'next';
-import { NasaApiResponse, SearchResults } from '@/types/api';
-import { APP_CONFIG } from '@/constants/constants';
+import { ItemDetails, SearchResults } from '@/types/api';
 import { Pagination } from '@/components/Pagination/Pagination';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { PixelifyFont } from '@/assets/fonts';
+import { ResultDetails } from '@/components/ResultDetails/ResultDetails';
+import { MainWrapper } from '@/components/MainWrapper/MainWrapper';
+import { fetchNasaData } from './api/fetchNasaData';
+import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
+
+interface GsspResult {
+  searchResults: SearchResults;
+  itemDetails?: ItemDetails;
+}
 
 export const getServerSideProps = (async (context) => {
-  const { query } = context;
-  const searchQuery = query.search || '';
-  const selectedPageSize = query.size || APP_CONFIG.DEFAULT_PAGE_SIZE;
-  const pageIndex = query.page || 1;
+  try {
+    const { query } = context;
 
-  const res = await fetch(
-    `https://images-api.nasa.gov/search?q=${searchQuery}&media_type=image&page_size=${selectedPageSize}&page=${pageIndex}`
-  );
-  const nasaApiResponse: NasaApiResponse = await res.json();
-  const searchResults: SearchResults = {
-    imagesData: nasaApiResponse.collection.items,
-    totalPages: Math.ceil(nasaApiResponse.collection.metadata.total_hits / +selectedPageSize),
-  };
-  return {
-    props: {
-      searchResults,
-    },
-  };
-}) satisfies GetServerSideProps<{
-  searchResults: SearchResults;
-}>;
+    const data = await fetchNasaData(query);
 
-export default function Main({ searchResults }: { searchResults: SearchResults }) {
+    return {
+      props: data,
+    };
+  } catch (error) {
+    // return {
+    //   redirect: {
+    //     destination: '/500',
+    //     permanent: false,
+    //   },
+    // };
+    return {
+      notFound: true,
+    };
+  }
+}) satisfies GetServerSideProps<GsspResult>;
+
+export default function Main({ searchResults, itemDetails }: GsspResult) {
   const { imagesData, totalPages } = searchResults;
   const isNothingFound = !imagesData?.length;
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     const handleRouteChangeStart = () => {
       setIsLoading(true);
     };
-
     const handleRouteChangeComplete = () => {
       setIsLoading(false);
     };
@@ -63,13 +68,15 @@ export default function Main({ searchResults }: { searchResults: SearchResults }
         <title>NASA Images</title>
         <link rel="icon" type="image/svg+xml" href="nasa-logo.svg" />
       </Head>
-      <div className={`container mx-auto flex min-h-screen max-w-screen-xl flex-col p-2 ${PixelifyFont.className}`}>
+
+      <ErrorBoundary>
         <Header />
-        <ErrorBoundary>
+        <MainWrapper>
           <ResultList isLoading={isLoading} imagesData={imagesData} />
-          <Pagination isLoading={isLoading} totalPages={totalPages} isNothingFound={isNothingFound} />
-        </ErrorBoundary>
-      </div>
+          <ResultDetails itemDetails={itemDetails} />
+        </MainWrapper>
+        <Pagination isLoading={isLoading} totalPages={totalPages} isNothingFound={isNothingFound} />
+      </ErrorBoundary>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { APP_CONFIG } from '../../constants/constants';
 import { useRouter } from 'next/router';
 import { QueryParams } from '@/types/general';
@@ -29,15 +29,11 @@ export const PageSizeSelect: React.FC = () => {
     setSelectedPageSize(+newValue);
   };
 
-  const pageSizeOptions = useMemo(
-    () =>
-      APP_CONFIG.PAGE_SIZES.map((pageSizeOption) => (
-        <option key={pageSizeOption} value={pageSizeOption.toString()}>
-          {pageSizeOption}
-        </option>
-      )),
-    []
-  );
+  const pageSizeOptions = APP_CONFIG.PAGE_SIZES.map((pageSizeOption) => (
+    <option key={pageSizeOption} value={pageSizeOption.toString()}>
+      {pageSizeOption}
+    </option>
+  ));
 
   return (
     <select

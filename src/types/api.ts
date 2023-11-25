@@ -3,6 +3,10 @@ export interface SearchResults {
   imagesData: ImageData[];
 }
 
+export interface ItemDetails {
+  imageData: ImageData;
+}
+
 export interface NasaApiResponse {
   collection: {
     metadata: {

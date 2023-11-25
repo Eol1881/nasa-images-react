@@ -1,5 +1,5 @@
 .main {
   @apply relative mt-4 flex justify-between rounded-lg bg-white px-2 py-5 shadow-md sm:px-4;
   background-image: url('https://img.freepik.com/free-vector/space-seamless-pattern-black-white-version_1284-38816.jpg?w=740&t=st=1699961540~exp=1699962140~hmac=5ae6b03f5742061ac41fc95ba19e104fbc132869ca1601f106ec415a3768ff6b');
-  background-image: url('https://img.freepik.com/premium-vector/childish-seamless-pattern-with-aliens-ufo-cosmos_453397-91.jpg?w=740');
+  background-image: url('../../assets/back.avif');
 }

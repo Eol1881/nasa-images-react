@@ -1,0 +1,4 @@
+.details {
+  box-shadow: rgba(40, 40, 40, 0.4) 4px 4px 5px;
+  @apply sticky top-8 z-20 -mr-4 h-fit basis-full select-none rounded-l-2xl bg-black/80 p-4 pr-8 text-white;
+}

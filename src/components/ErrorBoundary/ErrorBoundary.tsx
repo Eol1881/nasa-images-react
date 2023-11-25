@@ -1,6 +1,5 @@
 import React from 'react';
 import { extractErrorMessage } from '@/utils/extractErrorMessage';
-import { APP_CONFIG } from '@/constants/constants';
 
 interface State {
   hasError: boolean;
@@ -21,23 +20,19 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch() {
-    return;
-  }
-
-  resetAndUpdate = () => {
-    localStorage.removeItem(APP_CONFIG.LOCAL_STORAGE_PREFIX);
-    this.setState({ hasError: false, error: null });
-  };
+  componentDidCatch() {}
 
   render() {
     if (this.state.hasError) {
       return (
-        <div data-testid="error-boundary" className=" mx-auto my-auto flex flex-col items-center text-lg text-red-500">
+        <div
+          data-testid="error-boundary"
+          className="font-pixelify mx-auto my-auto flex flex-col items-center text-lg text-red-500"
+        >
           <h1>Oops! Something went wrong.</h1>
           <i>{extractErrorMessage(this.state.error)}</i>
-          <button className="button-blue my-4" onClick={this.resetAndUpdate}>
-            Reset
+          <button className="button-blue my-4" onClick={() => this.setState({ hasError: false })}>
+            Try again?
           </button>
         </div>
       );
