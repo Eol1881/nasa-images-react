@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #242424;
+}
+
+.button {
+  @apply rounded-md p-1 px-1;
+}
+
+.button-red {
+  @apply button bg-red-800 text-white transition-all hover:bg-red-600 active:bg-red-300 active:text-black sm:px-7;
+}
+
+.button-blue {
+  @apply button rounded-e-md bg-sky-700 text-white transition-all hover:bg-sky-800 active:bg-sky-300 active:text-black sm:px-10;
+}

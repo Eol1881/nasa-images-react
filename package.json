@@ -1,0 +1,61 @@
+{
+  "name": "nasa-images-react",
+  "private": true,
+  "version": "0.2.0",
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "lint-next": "next lint",
+    "build": "next build",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
+    "preview": "vite preview --open",
+    "format:fix": "prettier . --write",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "next": "14.0.3",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/node": "^20",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/coverage-v8": "^0.34.6",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.45.0",
+    "eslint-config-next": "14.0.3",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "husky": "^8.0.0",
+    "jsdom": "^22.1.0",
+    "lint-staged": "^15.0.2",
+    "next-router-mock": "^0.9.10",
+    "postcss": "^8.4.31",
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.6",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.0.2",
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^0.34.6"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "vitest run"
+    ]
+  }
+}
