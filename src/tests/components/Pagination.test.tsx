@@ -1,45 +1,62 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+import { render, screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import store from '../../store/store';
-import { Provider } from 'react-redux';
+import mockRouter from 'next-router-mock';
+import App from '@/pages';
+import { getMockedSearchResult } from '../mocks/getMockedSearchResult';
 
-import { routerConfig } from '../../App';
-
-const mockRouter = createMemoryRouter(routerConfig, {
-  initialEntries: ['/'],
-  initialIndex: 0,
-});
+vi.mock('next/router', () => require('next-router-mock'));
 
 describe('Testing Pagination component', () => {
   it('updates URL query parameter when page changes', async () => {
-    render(
-      <Provider store={store}>
-        <RouterProvider router={mockRouter} />
-      </Provider>
-    );
+    render(<App searchResults={getMockedSearchResult()} />);
 
-    expect(mockRouter.state.location.pathname).toEqual('/');
-
-    await waitFor(() => {
-      screen.getByText('Next');
-    });
-
-    const nextButton = screen.getByText('Next');
+    const nextButton = await screen.findByText('Next');
+    const prevButton = await screen.findByText('Prev');
 
     await userEvent.click(nextButton);
-
-    expect(mockRouter.state.location.search).toEqual('?page=2');
-
-    await waitFor(() => {
-      screen.getByText('Prev');
+    expect(mockRouter).toMatchObject({
+      query: { page: '2' },
     });
 
-    const prevButton = screen.getByText('Prev');
-
     await userEvent.click(prevButton);
+    expect(mockRouter).toMatchObject({
+      query: {},
+    });
+  });
+  it('does not render when there are no results', async () => {
+    render(<App searchResults={getMockedSearchResult('empty')} />);
 
-    expect(mockRouter.state.location.search).toEqual('');
+    const pagination = screen.queryByTestId('pagination');
+
+    expect(pagination).not.toBeInTheDocument();
+  });
+  it('disables prev button on first page', async () => {
+    render(<App searchResults={getMockedSearchResult()} />);
+
+    const prevButton = await screen.findByText('Prev');
+
+    expect(prevButton).toBeDisabled();
+  });
+  it('disables next button on last page', async () => {
+    render(<App searchResults={getMockedSearchResult('single')} />);
+
+    const nextButton = await screen.findByText('Next');
+
+    expect(nextButton).toBeDisabled();
+  });
+  it('correctly displays current page index', async () => {
+    render(<App searchResults={getMockedSearchResult()} />);
+
+    const nextButton = await screen.findByText('Next');
+    const prevButton = await screen.findByText('Prev');
+
+    await within(screen.getByTestId('pagination')).findByText(/1/i);
+    userEvent.click(nextButton);
+    await within(screen.getByTestId('pagination')).findByText(/2/i);
+    userEvent.click(nextButton);
+    await within(screen.getByTestId('pagination')).findByText(/3/i);
+    userEvent.click(prevButton);
+    await within(screen.getByTestId('pagination')).findByText(/2/i);
   });
 });

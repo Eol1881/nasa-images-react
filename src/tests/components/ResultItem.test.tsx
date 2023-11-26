@@ -1,51 +1,19 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import App from '@/pages';
+import { render, screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { getMockedItemDetails, getMockedSearchResult } from '../mocks/getMockedSearchResult';
+import { extractImageData } from '@/utils/extractImageData';
+import mockRouter from 'next-router-mock';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouterProvider } from 'next-router-mock/dist/MemoryRouterProvider';
 
-import { setupServer } from 'msw/node';
-import { handlers } from '../api/handlers';
-import { HttpResponse, http } from 'msw';
-import { searchResponseMock, singleSearchResponseMock } from '../api/responses';
+vi.mock('next/router', () => require('next-router-mock'));
 
-import { ResultItem } from '../../components/ResultItem';
-import { extractImageData } from '../../utils/extractImageData';
-import { routerConfig } from '../../App';
-import store from '../../store/store';
-
-const router = createMemoryRouter(routerConfig, {
-  initialEntries: ['/?search=moon'],
-});
-
-const mockImageData = searchResponseMock.collection.items[0];
-
-const server = setupServer(...handlers);
-
-server.use(
-  http.get(`https://images-api.nasa.gov/search*`, () => {
-    return HttpResponse.json(singleSearchResponseMock, {
-      status: 200,
-    });
-  })
-);
-
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-
-describe('Testing ResultList component', () => {
+describe('Testing ResultItem component', () => {
   it('renders the relevant ResultItem data', async () => {
-    render(
-      <MemoryRouter>
-        <ResultItem imageData={mockImageData} isActive={false} />
-      </MemoryRouter>
-    );
+    render(<App searchResults={getMockedSearchResult('single')} />);
 
-    const { imageUrl, imageTitle, center, dateCreated } = extractImageData(mockImageData) || {};
-
-    await waitFor(() => {
-      screen.getByTestId('result-item');
-    });
+    const { imageTitle, center, dateCreated } = extractImageData(getMockedItemDetails().imageData) || {};
 
     const resultItem = screen.getByTestId('result-item');
     expect(resultItem).toBeInTheDocument();
@@ -60,20 +28,23 @@ describe('Testing ResultList component', () => {
     expect(itemDateCreated).toBeInTheDocument();
 
     const img = within(resultItem).getByAltText(imageTitle);
-    expect(img).toHaveAttribute('src', imageUrl);
+    expect(img).toBeInTheDocument();
   });
-  it('opens a detailed card component on click and triggers an additional API call', async () => {
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    );
+  it('opens a detailed card component on click and changes the details url query parameter', async () => {
+    const { rerender } = render(<App searchResults={getMockedSearchResult('single')} />, {
+      wrapper: MemoryRouterProvider,
+    });
 
     const resultItem = await screen.findByTestId('result-item');
     expect(resultItem).toBeInTheDocument();
 
     await userEvent.click(resultItem);
 
+    expect(mockRouter).toMatchObject({
+      query: { details: 'test-nasa-id' },
+    });
+
+    rerender(<App searchResults={getMockedSearchResult('single')} itemDetails={getMockedItemDetails()} />);
     const resultDetails = await screen.findByTestId('result-details');
     expect(resultDetails).toBeInTheDocument();
   });

@@ -11,7 +11,7 @@ import { MainWrapper } from '@/components/MainWrapper/MainWrapper';
 import { fetchNasaData } from './api/fetchNasaData';
 import { ErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
 
-interface GsspResult {
+export interface GsspResult {
   searchResults: SearchResults;
   itemDetails?: ItemDetails;
 }
@@ -26,19 +26,13 @@ export const getServerSideProps = (async (context) => {
       props: data,
     };
   } catch (error) {
-    // return {
-    //   redirect: {
-    //     destination: '/500',
-    //     permanent: false,
-    //   },
-    // };
     return {
       notFound: true,
     };
   }
 }) satisfies GetServerSideProps<GsspResult>;
 
-export default function Main({ searchResults, itemDetails }: GsspResult) {
+export default function App({ searchResults, itemDetails }: GsspResult) {
   const { imagesData, totalPages } = searchResults;
   const isNothingFound = !imagesData?.length;
 

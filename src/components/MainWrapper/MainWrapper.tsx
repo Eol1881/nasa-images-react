@@ -22,7 +22,7 @@ export const MainWrapper: React.FC<Props> = ({ children }) => {
   };
 
   return (
-    <main className={styles.main} onClick={backgroundClickHandler}>
+    <main data-testid="main" className={styles.main} onClick={backgroundClickHandler}>
       {children}
     </main>
   );

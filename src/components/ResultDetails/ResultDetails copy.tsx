@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { QueryParams } from '@/types/general';
 import { ImageMagnifier } from './ImageMagnifier';
@@ -12,17 +13,15 @@ interface Props {
 }
 
 export const ResultDetails: React.FC<Props> = ({ itemDetails }) => {
-  const router = useRouter();
+  const { query } = useRouter();
 
   if (!itemDetails) return;
   const { imageData } = itemDetails;
 
-  const handleClose = () => {
-    const newQuery: QueryParams = { ...router.query };
+  const getCloseDetailsQuery = () => {
+    const newQuery: QueryParams = { ...query };
     delete newQuery.details;
-    router.push({
-      query: newQuery,
-    });
+    return newQuery;
   };
 
   return (
@@ -40,13 +39,15 @@ export const ResultDetails: React.FC<Props> = ({ itemDetails }) => {
           <p>Photo: {extractImageData(imageData).photographer || 'Unknown'}</p>
           <p>Date: {extractImageData(imageData).dateCreated || 'Unknown'}</p>
         </div>
-        <button
-          onClick={handleClose}
+        <Link
+          href={{
+            query: getCloseDetailsQuery(),
+          }}
           className="font-pixelify absolute bottom-0 right-0 inline-block p-4 transition-all hover:scale-110"
           data-testid="close-details-button"
         >
           CLOSE ❌
-        </button>
+        </Link>
       </div>
     )
   );

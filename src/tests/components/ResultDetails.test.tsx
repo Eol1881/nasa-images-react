@@ -1,59 +1,19 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { Provider } from 'react-redux';
+import { render, screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import App from '@/pages';
+import { getMockedItemDetails, getMockedSearchResult } from '../mocks/getMockedSearchResult';
+import { extractImageData } from '@/utils/extractImageData';
 import userEvent from '@testing-library/user-event';
+import mockRouter from 'next-router-mock';
+import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider';
 
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-import { setupServer } from 'msw/node';
-import { handlers } from '../api/handlers';
-import { singleSearchResponseMock } from '../api/responses';
-import { HttpResponse, http } from 'msw';
-
-import { routerConfig } from '../../App';
-import { extractImageData } from '../../utils/extractImageData';
-import store from '../../store/store';
-
-const server = setupServer(...handlers);
-
-server.use(
-  http.get(`https://images-api.nasa.gov/search*`, () => {
-    return HttpResponse.json(singleSearchResponseMock, {
-      status: 200,
-    });
-  })
-);
-
-beforeAll(() => server.listen());
-afterAll(() => server.close());
-
-const router = createMemoryRouter(routerConfig, {
-  initialEntries: ['/?details=test-nasa-id'],
-});
+vi.mock('next/router', () => require('next-router-mock'));
 
 describe('Testing ResultDetails component', () => {
-  it('displays a loading indicator while fetching data', () => {
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    );
+  it('correctly displays the detailed card data', () => {
+    render(<App searchResults={getMockedSearchResult('single')} itemDetails={getMockedItemDetails()} />);
 
-    const message = screen.getByTestId('loader');
-    expect(message).toBeInTheDocument();
-  });
-  it('correctly displays the detailed card data', async () => {
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    );
-
-    const { location, imageUrl, dateCreated, photographer } =
-      extractImageData(singleSearchResponseMock.collection.items[0]) || {};
-
-    await waitFor(() => {
-      screen.getByTestId('result-details');
-    });
+    const { location, imageUrl, dateCreated, photographer } = extractImageData(getMockedItemDetails().imageData) || {};
 
     const resultDetails = screen.getByTestId('result-details');
     expect(resultDetails).toBeInTheDocument();
@@ -70,19 +30,44 @@ describe('Testing ResultDetails component', () => {
     const img = within(resultDetails).getByAltText('NASA photo');
     expect(img).toHaveAttribute('src', imageUrl);
   });
-  it('correctly displays the detailed card data', async () => {
-    render(
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    );
-    const closeButton = screen.getByTestId('close-details-button');
-    const resultDetails = screen.getByTestId('result-details');
+  it('mounts and unmounts correctly', async () => {
+    const nasaId = getMockedItemDetails().imageData.data[0].nasa_id;
 
-    expect(closeButton).toBeInTheDocument();
-    expect(resultDetails).toBeInTheDocument();
+    mockRouter.push({
+      query: {
+        details: nasaId,
+      },
+    });
+
+    const { rerender } = render(
+      <App searchResults={getMockedSearchResult('single')} itemDetails={getMockedItemDetails()} />,
+      { wrapper: MemoryRouterProvider }
+    );
+
+    const resultDetails = screen.getByTestId('result-details');
+    const closeButton = screen.getByTestId('close-details-button');
+    const overlay = screen.getByTestId('main');
+    const resultItem = screen.getByTestId('result-item');
 
     await userEvent.click(closeButton);
+    rerender(<App searchResults={getMockedSearchResult('single')} />);
+    expect(mockRouter).toMatchObject({
+      query: {},
+    });
     expect(resultDetails).not.toBeInTheDocument();
+
+    await userEvent.click(resultItem);
+    rerender(<App searchResults={getMockedSearchResult('single')} itemDetails={getMockedItemDetails()} />);
+    expect(mockRouter).toMatchObject({
+      query: { details: nasaId },
+    });
+    expect(screen.getByTestId('result-details')).toBeInTheDocument();
+
+    await userEvent.click(overlay);
+    rerender(<App searchResults={getMockedSearchResult('single')} />);
+    expect(mockRouter).toMatchObject({
+      query: {},
+    });
+    expect(screen.queryByTestId('result-details')).not.toBeInTheDocument();
   });
 });

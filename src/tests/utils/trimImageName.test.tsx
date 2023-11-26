@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { trimImageName } from '../../utils/trimImageName';
 
 describe('Testing trimImageName utility function', () => {

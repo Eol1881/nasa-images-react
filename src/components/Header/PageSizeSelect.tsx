@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { APP_CONFIG } from '../../constants/constants';
 import { useRouter } from 'next/router';
 import { QueryParams } from '@/types/general';
@@ -6,11 +6,7 @@ import { QueryParams } from '@/types/general';
 export const PageSizeSelect: React.FC = () => {
   const router = useRouter();
   const { size } = router.query;
-  const [selectedPageSize, setSelectedPageSize] = useState(APP_CONFIG.DEFAULT_PAGE_SIZE);
-
-  useEffect(() => {
-    setSelectedPageSize(size ? +size : APP_CONFIG.DEFAULT_PAGE_SIZE);
-  }, [size]);
+  const [selectedPageSize, setSelectedPageSize] = useState(size || APP_CONFIG.DEFAULT_PAGE_SIZE);
 
   const changeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = e.target.value;
@@ -21,6 +17,7 @@ export const PageSizeSelect: React.FC = () => {
     delete newQuery.page;
     newQuery.size = newValue;
     isDefaultValue && delete newQuery.size;
+    if (newValue === size) return;
 
     router.push({
       pathname: '/',
@@ -41,6 +38,7 @@ export const PageSizeSelect: React.FC = () => {
       className="text-md  block cursor-pointer bg-gray-700 px-2 text-white focus:outline-none focus:ring-blue-500"
       onChange={changeHandler}
       value={selectedPageSize.toString()}
+      data-testid={'page-size-select'}
     >
       {pageSizeOptions}
     </select>

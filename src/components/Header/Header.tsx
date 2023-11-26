@@ -6,8 +6,9 @@ import { QueryParams } from '@/types/general';
 import { ThrowErrorButton } from './ThrowErrorButton';
 
 export const Header: React.FC = () => {
-  const [searchInputValue, setSearchInputValue] = useState('');
   const router = useRouter();
+  const searchQueryUrlParameterValue = router.query.search?.toString() || '';
+  const [searchInputValue, setSearchInputValue] = useState<string>(searchQueryUrlParameterValue);
 
   const searchHandler = () => {
     if (!searchInputValue) return;
@@ -16,12 +17,12 @@ export const Header: React.FC = () => {
     delete newQuery.page;
     delete newQuery.details;
     newQuery.search = searchInputValue;
+    if (searchInputValue === searchQueryUrlParameterValue) return;
 
     router.push({
       pathname: '/',
       query: newQuery,
     });
-    setSearchInputValue('');
   };
 
   const searchResetHandler = () => {
@@ -61,7 +62,7 @@ export const Header: React.FC = () => {
           onKeyDown={inputKeydownHandler}
         />
         <PageSizeSelect />
-        <button className="button-red !rounded-none" onClick={searchResetHandler}>
+        <button data-testid="reset-button" className="button-red !rounded-none" onClick={searchResetHandler}>
           Reset
         </button>
         <button data-testid="search-button" className="button-blue !rounded-s-none" onClick={searchHandler}>

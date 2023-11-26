@@ -1,38 +1,24 @@
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { ImageMagnifier } from '../../components/ImageMagnifier';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-
-const mockRouter = createMemoryRouter(
-  [
-    {
-      path: '/',
-      element: <ImageMagnifier isLoading={false} imageUrl="test-url" />,
-    },
-  ],
-  {
-    initialEntries: ['/'],
-    initialIndex: 0,
-  }
-);
+import { ImageMagnifier } from '@/components/ResultDetails/ImageMagnifier';
 
 describe('ImageMagnifier', () => {
   it('renders the component', () => {
-    render(<RouterProvider router={mockRouter} />);
+    render(<ImageMagnifier />);
     expect(screen.getByAltText('NASA photo')).toBeInTheDocument();
   });
-  it('shows the magnifier when mouse enters', () => {
-    render(<RouterProvider router={mockRouter} />);
+  it('shows the magnifier when mouse enters', async () => {
+    render(<ImageMagnifier />);
     fireEvent.mouseEnter(screen.getByAltText('NASA photo'));
     expect(screen.getByTestId('magnifier')).toBeInTheDocument();
   });
   it('hides the magnifier when mouse leaves', () => {
-    render(<RouterProvider router={mockRouter} />);
+    render(<ImageMagnifier />);
     fireEvent.mouseLeave(screen.getByAltText('NASA photo'));
     expect(screen.queryByTestId('magnifier')).toBeNull();
   });
   it('follows the mouse movement', () => {
-    render(<RouterProvider router={mockRouter} />);
+    render(<ImageMagnifier />);
 
     const moveDistance = 150;
 

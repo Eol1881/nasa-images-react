@@ -30,7 +30,7 @@ export const Pagination: React.FC<Props> = ({ isLoading, isNothingFound, totalPa
   return (
     <div className="h-10">
       {!isLoading && !isNothingFound && (
-        <div className=" flex justify-between pt-4 text-white">
+        <div data-testid="pagination" className=" flex justify-between pt-4 text-white">
           <div>
             Page: {pageIndex} / {totalPages}
           </div>
