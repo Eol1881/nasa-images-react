@@ -5,6 +5,7 @@ import { Main } from './routes/Main';
 import { UncontrolledForm } from './routes/UncontrolledForm';
 import { NavbarWrapper } from './components/NavbarWrapper';
 import store from './store/store';
+import { HookForm } from './routes/HookForm';
 
 export const routerConfig = [
   {
@@ -21,7 +22,7 @@ export const routerConfig = [
       },
       {
         path: '/form-2',
-        element: <UncontrolledForm />,
+        element: <HookForm />,
       },
     ],
   },

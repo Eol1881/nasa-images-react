@@ -9,7 +9,7 @@
 
 @layer components {
   .checkbox-label:has(input:checked) {
-    @apply bg-blue-400 text-slate-200;
+    @apply bg-blue-500 text-slate-200;
   }
 }
 

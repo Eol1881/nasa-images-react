@@ -1,20 +1,21 @@
 import { InputConfig } from '../types/general';
 import { capitalize } from '../utils/capitalize';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
 interface Props {
   inputConfig: InputConfig;
-  error: string;
+  error?: string;
+  register?: UseFormRegisterReturn<string>;
 }
 
-export const FormInput: React.FC<Props> = ({ inputConfig, error }) => {
+export const FormInput: React.FC<Props> = ({ inputConfig, error, register }) => {
   const getTextInput = () => {
     return (
       <input
         type={inputConfig.type}
         name={inputConfig.name}
-        className={`rounded-sm border-2 pl-2 ${
-          error ? 'border-red-400' : 'border-transparent'
-        }`}
+        className={`rounded-sm border-2 pl-2 ${error ? 'border-red-400' : 'border-transparent'}`}
+        {...register}
       />
     );
   };
@@ -33,6 +34,7 @@ export const FormInput: React.FC<Props> = ({ inputConfig, error }) => {
                   id={value}
                   value={value}
                   className={'hidden'}
+                  {...register}
                 />
                 {capitalize(value)}
               </label>
@@ -51,7 +53,7 @@ export const FormInput: React.FC<Props> = ({ inputConfig, error }) => {
             error ? 'text-red-500' : 'text-gray-800'
           }`}
         >
-          <input type={inputConfig.type} name={inputConfig.name} />
+          <input type={inputConfig.type} name={inputConfig.name} {...register} />
           <span> {inputConfig.text}</span>
         </label>
       </div>
@@ -66,9 +68,8 @@ export const FormInput: React.FC<Props> = ({ inputConfig, error }) => {
         className={`cursor-pointer space-x-2 rounded-sm bg-slate-200 p-1 pl-2 ${
           error ? 'text-red-500' : 'text-gray-800'
         }`}
-        accept={inputConfig.extensions
-          ?.map((extension) => `image/${extension}`)
-          .join(', ')}
+        accept={inputConfig.extensions?.map((extension) => `image/${extension}`).join(', ')}
+        {...register}
       />
     );
   };
@@ -89,14 +90,10 @@ export const FormInput: React.FC<Props> = ({ inputConfig, error }) => {
   return (
     <div>
       <label className="flex flex-col space-y-1">
-        <span className="pl-2 text-sm font-semibold text-gray-600">
-          {inputConfig.label}
-        </span>
+        <span className="pl-2 text-sm font-semibold text-gray-600">{inputConfig.label}</span>
         {input()}
       </label>
-      <span className="block h-4 text-right text-sm text-red-600">
-        {error || ''}
-      </span>
+      <span className="block h-4 text-right text-sm text-red-600">{error || ''}</span>
     </div>
   );
 };

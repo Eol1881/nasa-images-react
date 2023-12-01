@@ -5,8 +5,8 @@ const initialState: {
   formData: IFormData | null;
 } = { formData: null };
 
-const uncontrolledFormSlice = createSlice({
-  name: 'uncontrolledFormData',
+const HookFormSlice = createSlice({
+  name: 'HookFormSlice',
   initialState,
   reducers: {
     updateFormData: (state, action: PayloadAction<IFormData>) => {
@@ -16,6 +16,6 @@ const uncontrolledFormSlice = createSlice({
   },
 });
 
-export const { updateFormData } = uncontrolledFormSlice.actions;
+export const { updateFormData } = HookFormSlice.actions;
 
-export default uncontrolledFormSlice.reducer;
+export default HookFormSlice.reducer;

@@ -1,12 +1,18 @@
+export type InputName =
+  | 'name'
+  | 'age'
+  | 'email'
+  | 'password'
+  | 'confirm-password'
+  | 'gender'
+  | 'terms-and-conditions'
+  | 'picture';
+
 export interface InputConfig {
   type: React.HTMLInputTypeAttribute;
   label: string;
-  name: string;
+  name: InputName;
   values?: string[];
   text?: string;
   extensions?: string[];
 }
-
-export type ValidationErrors = Record<string, string>;
-
-export type FormEntries = Record<string, FormDataEntryValue> | null;

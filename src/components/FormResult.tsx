@@ -1,23 +1,21 @@
-import { INPUTS_CONFIG } from '../routes/UncontrolledForm';
-import { FormEntries } from '../types/general';
+import { INPUTS_CONFIG } from '../constatns/inputConfig';
+import { IFormData } from '../validation/validationSchema';
 
 interface Props {
-  formData: FormEntries;
+  formEntries: IFormData | null;
   label: string;
 }
 
-export const FormResult: React.FC<Props> = ({ formData, label }) => {
+export const FormResult: React.FC<Props> = ({ formEntries, label }) => {
   return (
-    formData && (
+    formEntries && (
       <div>
-        <div className=" w-full rounded-t-md bg-red-400 text-center font-semibold">
-          {label}
-        </div>
+        <div className=" w-full rounded-t-md bg-red-400 text-center font-semibold">{label}</div>
         <div className="border-1 space-y-3 overflow-hidden rounded-b-md border-gray-600 bg-gray-400/50 p-4">
           <ul className="space-y-2">
-            {Object.entries(formData).map((formDataEntrie) => {
-              const entrieName = formDataEntrie[0];
-              const entrieValue = formDataEntrie[1].toString();
+            {Object.entries(formEntries).map((formEntrie) => {
+              const entrieName = formEntrie[0];
+              const entrieValue = formEntrie[1].toString();
               const entrieLabel = INPUTS_CONFIG.find((input) => {
                 return input.name === entrieName;
               })?.label;

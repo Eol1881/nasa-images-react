@@ -1,17 +1,11 @@
-import { FormEntries } from '../types/general';
-import { validationSchema } from './validationSchema';
 import { ValidationError } from 'yup';
+import { validationSchema } from './validationSchema';
 
-export const validateForm = async (form: HTMLFormElement) => {
-  const formData = new FormData(form);
-  const formEntries: FormEntries = Object.fromEntries(formData);
-  console.log('Form submitted: ', formEntries);
-
+export const validateForm = async (formEntries?: Record<string, string>) => {
   try {
     await validationSchema.validate(formEntries, { abortEarly: false });
     return null;
   } catch (error) {
-    console.error(error);
     if (error instanceof ValidationError) {
       const errorMessages = error.inner.reduce(
         (acc: Record<string, string>, curr: ValidationError) => {
