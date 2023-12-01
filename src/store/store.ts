@@ -1,10 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import uncontrolledFormSliceReducer from './slices/uncontrolledFormSlice';
-import hookFormSliceReducer from './slices/HookFormSlice';
+import formsDataSliceReducer from './slices/FormsDataSlice';
 
 export default configureStore({
   reducer: {
-    uncontrolledFormData: uncontrolledFormSliceReducer,
-    hookFormData: hookFormSliceReducer,
+    formsData: formsDataSliceReducer,
   },
 });

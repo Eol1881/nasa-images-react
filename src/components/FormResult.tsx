@@ -1,21 +1,25 @@
 import { INPUTS_CONFIG } from '../constatns/inputConfig';
-import { IFormData } from '../validation/validationSchema';
+import { FormMetaData } from '../types/general';
+import { FormEntries } from '../validation/validationSchema';
 
 interface Props {
-  formEntries: IFormData | null;
-  label: string;
+  formEntries: FormEntries;
+  formMetaData: FormMetaData;
 }
 
-export const FormResult: React.FC<Props> = ({ formEntries, label }) => {
+export const FormResult: React.FC<Props> = ({ formEntries, formMetaData }) => {
   return (
     formEntries && (
       <div>
-        <div className=" w-full rounded-t-md bg-red-400 text-center font-semibold">{label}</div>
+        <div className=" w-full rounded-t-md bg-red-400 text-center font-semibold">
+          {formMetaData.formTitle}
+        </div>
         <div className="border-1 space-y-3 overflow-hidden rounded-b-md border-gray-600 bg-gray-400/50 p-4">
           <ul className="space-y-2">
             {Object.entries(formEntries).map((formEntrie) => {
               const entrieName = formEntrie[0];
               const entrieValue = formEntrie[1].toString();
+              if (entrieName === 'formTitle') return;
               const entrieLabel = INPUTS_CONFIG.find((input) => {
                 return input.name === entrieName;
               })?.label;

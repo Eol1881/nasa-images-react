@@ -3,10 +3,10 @@ import { useForm } from 'react-hook-form';
 import { FormInput } from '../components/FormInput';
 import { FormWrapper } from '../components/FormWrapper';
 import { INPUTS_CONFIG } from '../constatns/inputConfig';
-import { updateFormData } from '../store/slices/HookFormSlice';
+import { updateFormsData } from '../store/slices/FormsDataSlice';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/hooks';
-import { IFormData, validationSchema } from '../validation/validationSchema';
+import { FormEntries, validationSchema } from '../validation/validationSchema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitButton } from '../components/SubmitButton';
 import { serializeFormData } from '../utils/serializeFormData';
@@ -19,7 +19,7 @@ export const HookForm: React.FC = () => {
     handleSubmit,
     formState: { errors, isValid, submitCount },
     getValues,
-  } = useForm<IFormData>({
+  } = useForm<FormEntries>({
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
   });
@@ -29,7 +29,15 @@ export const HookForm: React.FC = () => {
       return;
     } else {
       const { serializedFormEntries } = await serializeFormData(getValues());
-      dispatch(updateFormData(serializedFormEntries));
+      dispatch(
+        updateFormsData({
+          formEntries: serializedFormEntries,
+          formMetaData: {
+            timestamp: Date.now(),
+            formTitle: 'Hook Form',
+          },
+        })
+      );
       navigate('/');
     }
   };

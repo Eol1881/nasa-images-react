@@ -17,15 +17,17 @@ export const validationSchema = yup.object({
     .test('required', 'required field', (value) => !!value)
     .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'must contain @ symbol followed by domain name')
     .required('required field'),
-  password: yup.string().required('required field'),
+  password: yup
+    .string()
+    .required('required field')
+    .matches(/[0-9]/, 'Password must contain at least one number')
+    .matches(/[\p{Ll}]/u, 'Password must contain at least one lowercase letter')
+    .matches(/[\p{Lu}]/u, 'Password must contain at least one uppercase letter')
+    .matches(/[\p{P}]/u, 'Password must contain at least one special character'),
   ['confirm-password']: yup
     .string()
     .oneOf([yup.ref('password')], 'Passwords must match')
     .required('required field'),
-  // ['terms-and-conditions']: yup
-  //   .boolean()
-  //   .oneOf([true], 'required field')
-  //   .required('required field'),
   ['terms-and-conditions']: yup
     .mixed()
     .test('mixed', 'required field', (value) => {
@@ -41,17 +43,12 @@ export const validationSchema = yup.object({
       if (value instanceof FileList) return (value as FileList)[0]?.size > 0;
       return false;
     })
-    // .test(
-    //   'fileSize',
-    //   'file size is too large',
-    //   (value) => value && (value as File).size <= 800000
-    // )
     .test('fileSize', 'file size is too large', (value) => {
       if (value instanceof File) return (value as File).size < 800000;
       if (value instanceof FileList) return (value as FileList)[0]?.size < 800000;
       return false;
     }),
-  gender: yup.string().required(),
+  gender: yup.string().required('required field'),
 });
 
-export type IFormData = yup.InferType<typeof validationSchema>;
+export type FormEntries = yup.InferType<typeof validationSchema>;

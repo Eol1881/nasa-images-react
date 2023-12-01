@@ -23,12 +23,11 @@ export const FormInput: React.FC<Props> = ({ inputConfig, error, register }) => 
   const getRadioInput = () => {
     return (
       <div className="flex w-fit overflow-hidden rounded-md">
-        {inputConfig.values?.map((value, index) => {
+        {inputConfig.values?.map((value) => {
           return (
             <div key={value}>
               <label className="checkbox-label block cursor-pointer bg-slate-200 px-4 py-1 hover:bg-blue-200">
                 <input
-                  defaultChecked={index === 0}
                   type={inputConfig.type}
                   name={inputConfig.name}
                   id={value}

@@ -16,3 +16,8 @@ export interface InputConfig {
   text?: string;
   extensions?: string[];
 }
+
+export type FormMetaData = {
+  timestamp: number;
+  formTitle: string;
+};

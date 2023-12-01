@@ -2,12 +2,12 @@ import React, { useRef, useState } from 'react';
 import { FormInput } from '../components/FormInput';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/hooks';
-import { updateFormData } from '../store/slices/uncontrolledFormSlice';
 import { validateForm } from '../validation/validateForm';
 import { FormWrapper } from '../components/FormWrapper';
 import { INPUTS_CONFIG } from '../constatns/inputConfig';
 import { SubmitButton } from '../components/SubmitButton';
 import { serializeFormData } from '../utils/serializeFormData';
+import { updateFormsData } from '../store/slices/FormsDataSlice';
 
 export const UncontrolledForm: React.FC = () => {
   const navigate = useNavigate();
@@ -23,12 +23,18 @@ export const UncontrolledForm: React.FC = () => {
 
     const errors = await validateForm(rawFormEntries);
 
-    console.log(errors);
-
     if (errors) {
       setErrors(errors);
     } else {
-      dispatch(updateFormData(serializedFormEntries));
+      dispatch(
+        updateFormsData({
+          formEntries: serializedFormEntries,
+          formMetaData: {
+            timestamp: Date.now(),
+            formTitle: 'Uncontrolled Form',
+          },
+        })
+      );
       navigate('/');
     }
   };
