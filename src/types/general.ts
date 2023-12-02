@@ -20,4 +20,5 @@ export interface InputConfig {
 export type FormMetaData = {
   timestamp: number;
   formTitle: string;
+  isNew?: boolean;
 };

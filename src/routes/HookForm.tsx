@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FormInput } from '../components/FormInput';
 import { FormWrapper } from '../components/FormWrapper';
@@ -41,10 +41,6 @@ export const HookForm: React.FC = () => {
       navigate('/');
     }
   };
-
-  useEffect(() => {
-    console.log(errors);
-  });
 
   return (
     <FormWrapper formTitle="Hook Form">

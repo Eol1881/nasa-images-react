@@ -4,6 +4,7 @@ import { FormMetaData } from '../../types/general';
 
 const initialState: {
   forms: { formEntries: FormEntries; formMetaData: FormMetaData }[];
+  lastFormId?: number;
 } = { forms: [] };
 
 const FormsDataSlice = createSlice({
@@ -16,10 +17,14 @@ const FormsDataSlice = createSlice({
     ) => {
       const formData = action.payload;
       state.forms.push(formData);
+      state.lastFormId = formData.formMetaData.timestamp;
+    },
+    deleteLastFormId: (state) => {
+      delete state.lastFormId;
     },
   },
 });
 
-export const { updateFormsData } = FormsDataSlice.actions;
+export const { updateFormsData, deleteLastFormId } = FormsDataSlice.actions;
 
 export default FormsDataSlice.reducer;
