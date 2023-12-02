@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./assets/fonts/Inter-VariableFont_slnt,wght.ttf');
+}
+
+@layer components {
+  .checkbox-label:has(input:checked) {
+    @apply bg-blue-500 text-slate-200;
+  }
+}
+
+:root {
+  background-color: #242424;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
